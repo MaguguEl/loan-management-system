@@ -25,14 +25,13 @@ class AddScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            // Last Added Section
-            Text('Last Added', style: TextStyle(fontSize: 18)),
             Expanded(
               child: ListView(
                 children: [
-                  AddedItem(title: 'Salary', amount: '+\$1500', date: '30 Apr 2022', isIncome: true),
-                  AddedItem(title: 'Paypal', amount: '+\$3500', date: '28 Apr 2022', isIncome: true),
-                  AddedItem(title: 'Food', amount: '-\$300', date: '25 Apr 2022', isIncome: false),
+                  AddedItem(title: 'Magugu', amount: '+\$1500', date: '30 Apr 2022', isIncome: true),
+                  AddedItem(title: 'Manyera', amount: '+\$3500', date: '28 Apr 2022', isIncome: true),
+                  AddedItem(title: 'Menyamenya', amount: '-\$300', date: '25 Apr 2022', isIncome: false),
+                  AddedItem(title: 'Magombo', amount: '+\$3500', date: '28 Apr 2022', isIncome: true),
                   // Add more items as needed
                 ],
               ),
@@ -41,10 +40,11 @@ class AddScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
         onPressed: () {
           // Action for adding
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -82,7 +82,7 @@ class AddedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.attach_money),
+      leading: Icon(Icons.person_3_outlined),
       title: Text(title),
       subtitle: Text(date),
       trailing: Text(

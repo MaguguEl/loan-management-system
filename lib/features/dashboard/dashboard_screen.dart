@@ -6,6 +6,12 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Dashboard'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,25 +39,24 @@ class DashboardScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            // Statistics Graph
-            Text('Statistics', style: TextStyle(fontSize: 18)),
+            Text('Analytics', style: TextStyle(fontSize: 18)),
             Expanded(
               child: BarChartWidget(), // Implement a custom widget or use a Flutter chart package
             ),
             // Income and Expense toggles
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  child: Text('Income'),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text('Expenses'),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     TextButton(
+            //       onPressed: () {},
+            //       child: Text('Income'),
+            //     ),
+            //     TextButton(
+            //       onPressed: () {},
+            //       child: Text('Expenses'),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),

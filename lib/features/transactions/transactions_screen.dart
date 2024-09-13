@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ReportsScreen extends StatelessWidget {
+class TransactionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reports'),
+        title: Text('Transactions'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -14,7 +14,7 @@ class ReportsScreen extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Text('Reports Page Content'),
+        child: Text('Transactions Page Content'),
       ),
     );
   }

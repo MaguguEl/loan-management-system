@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loan_management_system/screens/main_screen.dart';
+import 'package:loan_management_system/navigation/main_screen.dart';
 
 void main() {
   runApp(MyApp());

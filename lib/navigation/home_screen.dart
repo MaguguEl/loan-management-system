@@ -18,12 +18,12 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             const TotalBalanceCard(),  // Total balance card at the top
-            SizedBox(height: 20),
-            TransactionSection(),  // Transaction section with Divider
+            SizedBox(height: 30),
+            MemberSection(),  // Member section with Divider
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {},
@@ -43,7 +43,7 @@ class TotalBalanceCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF42A5F5), Color(0xFF1E88E5)],
+            colors: [Color.fromARGB(255, 73, 164, 238), Color.fromARGB(255, 23, 133, 230)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -88,7 +88,7 @@ class TotalBalanceCard extends StatelessWidget {
   }
 }
 
-class TransactionSection extends StatelessWidget {
+class MemberSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -97,20 +97,20 @@ class TransactionSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Transactions', style: TextStyle(fontSize: 18)),
-              Text('See All', style: TextStyle(color: Colors.blue)),
+              Text('Members', style: TextStyle(fontSize: 18)),
+              Text('View All', style: TextStyle(color: Colors.blue)),
             ],
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 3,  // Example transaction count
+              itemCount: 3,  // Example Member count
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    TransactionItem(
-                      title: 'Transaction $index',
+                    MemberItem(
+                      title: 'Member $index',
                       amount: index % 2 == 0 ? '-\$150' : '+\$200',
-                      date: 'Today',
+                      date: 'Mvunguti',
                       isIncome: index % 2 == 1,
                     ),
                     Divider(
@@ -118,7 +118,7 @@ class TransactionSection extends StatelessWidget {
                       thickness: 1.0,
                       indent: 16.0,
                       endIndent: 16.0,
-                    ),  // Divider added between each transaction
+                    ),
                   ],
                 );
               },
@@ -130,13 +130,13 @@ class TransactionSection extends StatelessWidget {
   }
 }
 
-class TransactionItem extends StatelessWidget {
+class MemberItem extends StatelessWidget {
   final String title;
   final String amount;
   final String date;
   final bool isIncome;
 
-  const TransactionItem({
+  const MemberItem({
     required this.title,
     required this.amount,
     required this.date,

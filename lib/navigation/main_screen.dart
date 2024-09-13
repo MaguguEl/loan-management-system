@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/dashboard_screen.dart';
 import 'package:loan_management_system/features/member_management/member_screen.dart';
 //import 'package:loan_management_system/screens/dashboard_screen.dart';
-import 'package:loan_management_system/screens/home_screen.dart';
+import 'package:loan_management_system/navigation/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-
+        
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
