@@ -23,18 +23,12 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
         onPressed: () {},
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white,),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ''),
-      //     BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: ''),
-      //     BottomNavigationBarItem(icon: Icon(Icons.explore_outlined), label: ''), // Added icon
-      //     BottomNavigationBarItem(icon: Icon(Icons.groups), label: ''), // Added icon
-      //   ],
-      // ),
     );
   }
 }
