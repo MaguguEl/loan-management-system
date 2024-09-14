@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AddScreen extends StatelessWidget {
+class AddMemberScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,17 +21,21 @@ class AddScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AddIncomeExpenseButton(text: 'Add Income', icon: Icons.account_balance_wallet),
-                AddIncomeExpenseButton(text: 'Add Expense', icon: Icons.shopping_cart),
+                AddIncomeExpenseButton(text: 'Add Expense', icon: Icons.wallet_giftcard_outlined),
               ],
             ),
             SizedBox(height: 20),
             Expanded(
               child: ListView(
                 children: [
-                  AddedItem(title: 'Magugu', amount: '+\$1500', date: '30 Apr 2022', isIncome: true),
-                  AddedItem(title: 'Manyera', amount: '+\$3500', date: '28 Apr 2022', isIncome: true),
-                  AddedItem(title: 'Menyamenya', amount: '-\$300', date: '25 Apr 2022', isIncome: false),
-                  AddedItem(title: 'Magombo', amount: '+\$3500', date: '28 Apr 2022', isIncome: true),
+                  AddedItem(title: 'Magugu', date: '30 Apr 2022'),
+                  Divider(),
+                  AddedItem(title: 'Manyera', date: '28 Apr 2022'),
+                  Divider(),
+                  AddedItem(title: 'Menyamenya', date: '25 Apr 2022'),
+                  Divider(),
+                  AddedItem(title: 'Magombo', date: '28 Apr 2022'),
+                  
                   // Add more items as needed
                 ],
               ),
@@ -73,22 +77,17 @@ class AddIncomeExpenseButton extends StatelessWidget {
 
 class AddedItem extends StatelessWidget {
   final String title;
-  final String amount;
   final String date;
-  final bool isIncome;
 
-  AddedItem({required this.title, required this.amount, required this.date, required this.isIncome});
+  AddedItem({required this.title, required this.date});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.person_3_outlined),
+      leading: Icon(Icons.person),
       title: Text(title),
       subtitle: Text(date),
-      trailing: Text(
-        amount,
-        style: TextStyle(color: isIncome ? Colors.green : Colors.red),
-      ),
+      trailing: Icon(Icons.more_vert)
     );
   }
 }
