@@ -13,13 +13,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
   int currentTab = 0;
-  final List<Widget> screens =[
+  final List<Widget> screens = [
     HomeScreen(),
     DashboardScreen(),
     ReportsScreen(),
-    AddMemberScreen(),
+    MembersScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -37,71 +36,53 @@ class _MainScreenState extends State<MainScreen> {
         shape: const CircleBorder(),
         onPressed: () {
           Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostsScreen(),
-      ),
-    );
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostsScreen(),
+            ),
+          );
         },
-        child: Icon(Icons.add, color: Colors.white,),
+        child: Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
-       child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      currentScreen = HomeScreen();
-                      currentTab = 0;
-                    });
-                  },
-                  icon: Icon(
-                        Icons.home_filled,
-                        color: currentTab == 0? Colors.blue : Colors.grey,
-                  ),
-                ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      currentScreen = DashboardScreen();
-                      currentTab = 1;
-                    });
-                  },
-                  icon: Icon(
-                        Icons.dashboard,
-                        color: currentTab == 1? Colors.blue : Colors.grey,
-                  ),
-                ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      currentScreen = ReportsScreen();
-                      currentTab = 2;
-                    });
-                  },
-                  icon: Icon(
-                        Icons.bar_chart,
-                        color: currentTab == 2? Colors.blue : Colors.grey,
-                      ),
-                ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      currentScreen = AddMemberScreen();
-                      currentTab = 3;
-                    });
-                  },
-                  icon: Icon(
-                        Icons.groups,
-                        color: currentTab == 3? Colors.blue : Colors.grey,
-                      ),
-                ),
-            ],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildIconButton(Icons.home_filled, 'Home', 0, HomeScreen()),
+            _buildIconButton(Icons.dashboard, 'Dashboard', 1, DashboardScreen()),
+            _buildIconButton(Icons.table_view, 'Reports', 2, ReportsScreen()),
+            _buildIconButton(Icons.groups, 'Members', 3, MembersScreen()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, String label, int tabIndex, Widget screen) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          currentScreen = screen;
+          currentTab = tabIndex;
+        });
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: currentTab == tabIndex ? Colors.blue : Colors.grey,
           ),
+          Text(
+            label,
+            style: TextStyle(
+              color: currentTab == tabIndex ? Colors.blue : Colors.grey,
+            ),
+          ),
+        ],
       ),
     );
   }
