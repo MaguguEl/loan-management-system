@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AddMemberScreen extends StatelessWidget {
+  const AddMemberScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Members List'),
+        title: const Text('Members List'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -24,16 +26,16 @@ class AddMemberScreen extends StatelessWidget {
                 AddIncomeExpenseButton(text: 'Add Expense', icon: Icons.wallet_giftcard_outlined),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView(
                 children: [
                   AddedItem(title: 'Magugu', date: '30 Apr 2022'),
-                  Divider(),
+                  const Divider(),
                   AddedItem(title: 'Manyera', date: '28 Apr 2022'),
-                  Divider(),
+                  const Divider(),
                   AddedItem(title: 'Menyamenya', date: '25 Apr 2022'),
-                  Divider(),
+                  const Divider(),
                   AddedItem(title: 'Magombo', date: '28 Apr 2022'),
                   
                   // Add more items as needed
@@ -43,13 +45,6 @@ class AddMemberScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () {
-          // Action for adding
-        },
-        child: Icon(Icons.add, color: Colors.white),
-      ),
     );
   }
 }
@@ -58,7 +53,7 @@ class AddIncomeExpenseButton extends StatelessWidget {
   final String text;
   final IconData icon;
 
-  AddIncomeExpenseButton({required this.text, required this.icon});
+  const AddIncomeExpenseButton({super.key, required this.text, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +64,7 @@ class AddIncomeExpenseButton extends StatelessWidget {
       icon: Icon(icon),
       label: Text(text),
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       ),
     );
   }
@@ -79,15 +74,15 @@ class AddedItem extends StatelessWidget {
   final String title;
   final String date;
 
-  AddedItem({required this.title, required this.date});
+  const AddedItem({super.key, required this.title, required this.date});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.person),
+      leading: const Icon(Icons.person),
       title: Text(title),
       subtitle: Text(date),
-      trailing: Icon(Icons.more_vert)
+      trailing: const Icon(Icons.more_vert)
     );
   }
 }

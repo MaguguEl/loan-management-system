@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 class ReportsScreen extends StatelessWidget {
+  const ReportsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reports'),
+        title: const Text('Reports'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Reports Page Content'),
       ),
     );

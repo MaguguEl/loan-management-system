@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/widget/barchart_widget.dart';
 
 class  DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: const Text('Dashboard'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -20,7 +22,7 @@ class  DashboardScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Total Loan and Interests
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
@@ -39,8 +41,8 @@ class  DashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text('Analytics', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 20),
+            const Text('Analytics', style: TextStyle(fontSize: 18)),
             Expanded(
               child: BarChartWidget(), 
             ),

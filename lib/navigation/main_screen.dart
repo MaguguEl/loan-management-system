@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/dashboard_screen.dart';
 import 'package:loan_management_system/features/member_management/member_screen.dart';
 import 'package:loan_management_system/features/reports/reports_screen.dart';
+import 'package:loan_management_system/navigation/posts_screen.dart';
 import 'package:loan_management_system/navigation/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -26,18 +29,25 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(
-        child: currentScreen,
         bucket: bucket,
+        child: currentScreen,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
+        shape: const CircleBorder(),
+        onPressed: () {
+          Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostsScreen(),
+      ),
+    );
+        },
         child: Icon(Icons.add, color: Colors.white,),
-        shape: CircleBorder(),
-        onPressed: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 10,
        child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
