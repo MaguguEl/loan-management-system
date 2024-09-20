@@ -14,15 +14,23 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int currentTab = 0;
+
+  // Initialize screens with dummy values for MembersScreen
   final List<Widget> screens = [
-    HomeScreen(),
-    DashboardScreen(),
-    ReportsScreen(),
-    MembersScreen(),
+    const HomeScreen(),
+    const DashboardScreen(),
+    const ReportsScreen(),
+    MembersScreen(
+      memberName: 'Elvis',
+      memberPhone: '1234567890',
+      memberResidence: 'Mvunguti',
+      memberWelfare: 'Good',
+      noteDescription: 'No specific notes',
+    ),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = HomeScreen();
+  Widget currentScreen = const HomeScreen();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           );
         },
-        child: Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -51,10 +59,21 @@ class _MainScreenState extends State<MainScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildIconButton(Icons.home_filled, 'Home', 0, HomeScreen()),
-            _buildIconButton(Icons.dashboard, 'Dashboard', 1, DashboardScreen()),
-            _buildIconButton(Icons.table_view, 'Reports', 2, ReportsScreen()),
-            _buildIconButton(Icons.groups, 'Members', 3, MembersScreen()),
+            _buildIconButton(Icons.home_filled, 'Home', 0, const HomeScreen()),
+            _buildIconButton(Icons.dashboard, 'Dashboard', 1, const DashboardScreen()),
+            _buildIconButton(Icons.table_view, 'Reports', 2, const ReportsScreen()),
+            _buildIconButton(
+              Icons.groups, 
+              'Members', 
+              3, 
+              MembersScreen(
+                memberName: 'Elvis',
+                memberPhone: '1234567890',
+                memberResidence: 'Mvunguti',
+                memberWelfare: 'Good',
+                noteDescription: 'No specific notes',
+              ),
+            ),
           ],
         ),
       ),

@@ -12,7 +12,7 @@ class PostsScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Handle back navigation
+            Navigator.pop(context);
           },
         ),
         backgroundColor: Colors.transparent,
