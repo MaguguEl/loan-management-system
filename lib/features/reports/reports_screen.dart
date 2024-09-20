@@ -8,12 +8,12 @@ class ReportsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {},
+          )
+        ],
       ),
       body: const Center(
         child: Text('Reports Page Content'),

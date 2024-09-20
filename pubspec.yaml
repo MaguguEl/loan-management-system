@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   fl_chart: ^0.36.3
+  sqflite: ^2.3.3+1
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
