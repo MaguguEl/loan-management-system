@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 class TransactionsScreen extends StatelessWidget {
+  const TransactionsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transactions'),
+        title: const Text('Transactions'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Transactions Page Content'),
       ),
     );
