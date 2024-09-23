@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loan_management_system/features/member_management/member_screen.dart';
+import 'package:loan_management_system/features/member_management/member_list_screen.dart';
 
 class AddMemberForm extends StatefulWidget {
   const AddMemberForm({Key? key}) : super(key: key);

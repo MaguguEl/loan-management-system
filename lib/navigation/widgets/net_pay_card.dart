@@ -43,13 +43,13 @@ class TotalNetPayCard extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Text('Total Loans', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
+                      Text('Total Loans Taken', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
                       Text('\$2,350.00', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white)),
                     ],
                   ),
                   Column(
                     children: [
-                      Text('Total Interests', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white)),
+                      Text('Total Loans Paid', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white)),
                       Text('\$950.00', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white)),
                     ],
                   ),

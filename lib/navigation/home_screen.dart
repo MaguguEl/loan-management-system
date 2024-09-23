@@ -11,6 +11,8 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        backgroundColor: Colors.white, 
+        foregroundColor: Colors.black, 
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {},),
@@ -32,28 +34,28 @@ class HomeScreen extends StatelessWidget {
               children: [
                 CustomIconButton(
                   label: 'Shares',
-                  icon: Icons.pie_chart,
+                  imagePath: 'assets/icons/shares.png', 
                   onPressed: () {
                     // Add your shares logic here
                   },
                 ),
                 CustomIconButton(
                   label: 'Dividends',
-                  icon: Icons.attach_money,
+                  imagePath: 'assets/icons/dividends.png', 
                   onPressed: () {
                     // Add your dividends logic here
                   },
                 ),
                 CustomIconButton(
                   label: 'Welfare',
-                  icon: Icons.local_hospital,
+                  imagePath: 'assets/icons/welfare.png', 
                   onPressed: () {
                     // Add your welfare logic here
                   },
                 ),
                 CustomIconButton(
                   label: 'Penalty',
-                  icon: Icons.warning,
+                  imagePath: 'assets/icons/penalty.png', 
                   onPressed: () {
                     // Add your penalty logic here
                   },
@@ -63,6 +65,7 @@ class HomeScreen extends StatelessWidget {
             
             const SizedBox(height: 30),
             MemberSection(), 
+            const SizedBox(height: 30),
           ],
         ),
       ),

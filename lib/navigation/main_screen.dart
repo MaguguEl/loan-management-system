@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/dashboard_screen.dart';
-import 'package:loan_management_system/features/member_management/member_screen.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
+import 'package:loan_management_system/features/member_management/member_list_screen.dart';
 import 'package:loan_management_system/features/reports/reports_screen.dart';
 import 'package:loan_management_system/navigation/posts_screen.dart';
 import 'package:loan_management_system/navigation/home_screen.dart';
@@ -20,13 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const DashboardScreen(),
     const ReportsScreen(),
-    MembersScreen(
-      memberName: 'Elvis',
-      memberPhone: '1234567890',
-      memberResidence: 'Mvunguti',
-      memberWelfare: 'Good',
-      noteDescription: 'No specific notes',
-    ),
+    MemberDetailsScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -40,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
         child: currentScreen,
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF305CDE),
         shape: const CircleBorder(),
         onPressed: () {
           Navigator.push(
@@ -54,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         child: Row(
@@ -66,13 +62,7 @@ class _MainScreenState extends State<MainScreen> {
               Icons.groups, 
               'Members', 
               3, 
-              MembersScreen(
-                memberName: 'Elvis',
-                memberPhone: '1234567890',
-                memberResidence: 'Mvunguti',
-                memberWelfare: 'Good',
-                noteDescription: 'No specific notes',
-              ),
+              MemberDetailsScreen()
             ),
           ],
         ),
@@ -93,12 +83,12 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Icon(
             icon,
-            color: currentTab == tabIndex ? Colors.blue : Colors.grey,
+            color: currentTab == tabIndex ? Color(0xFF305CDE) : Colors.grey,
           ),
           Text(
             label,
             style: TextStyle(
-              color: currentTab == tabIndex ? Colors.blue : Colors.grey,
+              color: currentTab == tabIndex ? Color(0xFF305CDE) : Colors.grey,
             ),
           ),
         ],

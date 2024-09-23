@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loan_management_system/navigation/main_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white, 
       ),
-      home: MainScreen(),
+      home: const MainScreen(),
     );
   }
 }
-
