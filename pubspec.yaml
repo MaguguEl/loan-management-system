@@ -20,3 +20,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/icons/shares.png
+    - assets/icons/dividends.png
+    - assets/icons/welfare.png
+    - assets/icons/penalty.png

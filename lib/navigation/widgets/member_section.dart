@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:loan_management_system/features/member_management/member_screen.dart';
+import 'package:loan_management_system/features/member_management/member_list_screen.dart';
 
 class MemberSection extends StatelessWidget {
   const MemberSection({super.key});
@@ -33,8 +33,8 @@ class MemberSection extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MembersScreen(
-                                                memberName: 'Elvis',
-                                                memberPhone: '1234567890',
+                                                memberName: 'Elvis Magugu',
+                                                memberPhone: '0883440857',
                                                 memberResidence: 'Mvunguti',
                                                 memberWelfare: 'Good',
                                                 noteDescription: 'No specific notes',
