@@ -34,5 +34,24 @@
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
+<script>
+  // Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyA9d1kYTp6R4Ap_oSyzN8jA2Ouiq5pWap4",
+    authDomain: "loan-manager-v1.firebaseapp.com",
+    databaseURL: "https://loan-manager-v1-default-rtdb.firebaseio.com",
+    projectId: "loan-manager-v1",
+    storageBucket: "loan-manager-v1.appspot.com",
+    messagingSenderId: "993579334903",
+    appId: "1:993579334903:web:03182d5b241c2dfce4a7f2",
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
 </body>
 </html>
