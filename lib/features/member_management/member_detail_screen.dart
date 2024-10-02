@@ -1,6 +1,28 @@
 import 'package:flutter/material.dart';
 
-class MemberDetailsScreen extends StatelessWidget {
+class MemberDetailsScreen extends StatefulWidget {
+  const MemberDetailsScreen({
+    Key? key,
+    required this.memberName,
+    required this.memberPhone,
+    required this.memberEmail,
+    required this.memberWard,
+    required this.memberShares,
+    required this.noteDescription,
+  }) : super(key: key);
+
+  final String memberName;
+  final String memberPhone;
+  final String memberEmail;
+  final String memberWard;
+  final String memberShares;
+  final String noteDescription;
+
+  @override
+  _MemberDetailsScreenState createState() => _MemberDetailsScreenState();
+}
+
+class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,16 +30,15 @@ class MemberDetailsScreen extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              title: Text('Member Details'),
-              centerTitle: true,
-              pinned: true,
-              backgroundColor: Colors.white,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
+              title: Text('Member Details'),
+              pinned: true,
+              backgroundColor: Colors.white,
             ),
           ];
         },
@@ -41,12 +62,13 @@ class MemberDetailsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Magugu Elvis',
+                          widget.memberName,
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        Text(
-                          'Mvunguti Ward',
+                        Text( widget.memberWard,
                           style: TextStyle(color: Colors.grey),
                         ),
                         SizedBox(height: 8),
@@ -54,7 +76,7 @@ class MemberDetailsScreen extends StatelessWidget {
                           children: [
                             Icon(Icons.phone, size: 16, color: Colors.grey),
                             SizedBox(width: 4),
-                            Text('(265) 882556772'),
+                            Text(widget.memberPhone),
                           ],
                         ),
                         SizedBox(height: 4),
@@ -62,33 +84,31 @@ class MemberDetailsScreen extends StatelessWidget {
                           children: [
                             Icon(Icons.email, size: 16, color: Colors.grey),
                             SizedBox(width: 4),
-                            Text('maguguelvis@gmail.com'),
+                            Text(widget.memberEmail),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  Icon(Icons.more_vert),
+                  Icon(Icons.more_horiz),
                 ],
               ),
               SizedBox(height: 16),
-
               Text(
-                'Account Details',
-                style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                'Account',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),
-
-              // Account Details Section
               Expanded(
                 child: ListView(
+                  physics: NeverScrollableScrollPhysics(),
                   children: [
-                    _buildAccountDetailCard('Shares', 'K200,000', Colors.blue),
-                    _buildAccountDetailCard('Loan Taken', 'K200,000', Colors.red),
-                    _buildAccountDetailCard('Dividend', 'K200,000', Colors.purple),
-                    _buildAccountDetailCard('Welfare', 'K200,000', Colors.orange),
-                    _buildAccountDetailCard('Loan Paid', 'K200,000', Colors.green),
+                    _buildAccountDetailCard('Shares', widget.memberShares, Colors.blue.shade100, Colors.blue),
+                    _buildAccountDetailCard('Dividend', 'K200,000', Colors.purple.shade100, Colors.purple),
+                    _buildAccountDetailCard('Loan Taken', 'K200,000', Colors.red.shade100, Colors.red),
+                    _buildAccountDetailCard('Loan Paid', 'K200,000', Colors.green.shade100, Colors.green),
+                    _buildAccountDetailCard('Welfare', 'K200,000', Colors.orange.shade100, Colors.orange),
+                    _buildAccountDetailCard('Penalty', 'K200,000', Colors.yellow.shade100, Colors.yellow),
                   ],
                 ),
               ),
@@ -99,41 +119,52 @@ class MemberDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountDetailCard(String title, String amount, Color color) {
+  Widget _buildAccountDetailCard(String title, String amount, Color backgroundColor, Color borderColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: borderColor, width: 2), // Border color
         ),
-        elevation: 4,
-        color: color,
+        elevation: 2,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  Icon(Icons.account_balance_wallet, color: borderColor, size: 30), // Icon representing the card
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        amount,
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              Text(
-                amount,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Icon(Icons.more_vert, color: Colors.white),
             ],
           ),
         ),
+        color: backgroundColor, // Light background color for each card
       ),
     );
   }
 }
+

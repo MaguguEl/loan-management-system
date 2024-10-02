@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart'; // Import Firebase Database
+import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
-import 'package:loan_management_system/features/member_management/widget/add_member_form.dart';
 
 class MembersScreen extends StatefulWidget {
   const MembersScreen({Key? key}) : super(key: key);
@@ -23,26 +23,91 @@ class _MembersScreenState extends State<MembersScreen> {
     _loadMembersFromDatabase();
   }
 
-  void _loadMembersFromDatabase() async {
-    // Fetch members from Firebase
+  Future<void> _loadMembersFromDatabase() async {
     DatabaseReference dbRef = FirebaseDatabase.instance.ref('members');
-    
-    // Fetch data as a DatabaseEvent
     DatabaseEvent event = await dbRef.once();
-    
-    // Clear current members
     members.clear();
 
-    // Parse the data from Firebase
     if (event.snapshot.exists) {
       Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
       data.forEach((key, value) {
-        members.add(Member.fromMap(value, key)); // Use your Member model's fromMap method
+        members.add(Member.fromMap(value, key)); 
       });
     }
 
+    setState(() {});
+  }
+
+  Future<void> _showMemberOptions(BuildContext context, Member member) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text('Edit Member'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to member detail screen to edit
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => MemberDetailScreen(member: member),
+                //   ),
+                // ).then((_) {
+                //   _loadMembersFromDatabase(); // Refresh the member list after editing
+                // });
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text('Delete Member'),
+              onTap: () {
+                Navigator.pop(context);
+                _showDeleteConfirmationDialog(member);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(Member member) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Member'),
+          content: const Text('Are you sure you want to delete this member? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _deleteMember(member.id);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteMember(String memberId) async {
+    DatabaseReference dbRef = FirebaseDatabase.instance.ref('members/$memberId');
+    await dbRef.remove();
     setState(() {
-      // Refresh the state to show the updated list
+      members.removeWhere((member) => member.id == memberId);
     });
   }
 
@@ -85,14 +150,9 @@ class _MembersScreenState extends State<MembersScreen> {
         foregroundColor: Colors.black,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.more_vert),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddMemberForm(onMemberAdded: _loadMembersFromDatabase),
-                ),
-              );
+              // You can implement sorting or filtering options here if needed
             },
           ),
         ],
@@ -113,44 +173,77 @@ class _MembersScreenState extends State<MembersScreen> {
               },
             ),
             const SizedBox(height: 20),
-            DropdownButton<String>(
-              value: sortingCriteria,
-              onChanged: (newValue) {
-                setState(() {
-                  sortingCriteria = newValue!;
-                });
-              },
-              items: <String>['Name', 'Phone', 'Ward'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text('Sort by $value'),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
             Expanded(
               child: ListView.separated(
                 itemCount: filteredMembers.length,
                 itemBuilder: (context, index) {
                   final member = filteredMembers[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: getRandomColor(),
-                      child: Text(
-                        member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  return Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                      leading: CircleAvatar(
+                        backgroundColor: getRandomColor(), // Generates a random color
+                        child: Text(
+                          member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    title: Text(member.name),
-                    subtitle: Text('${member.phone} | ${member.ward}'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () async {
-                        await FirebaseDatabase.instance
-                            .ref('members/${member.id}') // Assuming `member.id` is the key
-                            .remove(); // Delete member from Firebase
-                        _loadMembersFromDatabase(); // Refresh list after deletion
+                      title: Text(member.name),
+                      subtitle: Text('${member.phone} | ${member.ward}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '+150',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              Text(
+                                '-200',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.more_vert),
+                            onPressed: () {
+                              _showMemberOptions(context, member);
+                            },
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        // Navigating to MemberDetailsScreen with member details
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MemberDetailsScreen(
+                              memberName: member.name,
+                              memberPhone: member.phone,
+                              memberEmail: member.email ?? 'No email',
+                              memberWard: member.ward,
+                              memberShares: member.shares.toString(),
+                              noteDescription: member.noteDescription ?? 'No description',
+                            ),
+                          ),
+                        );
                       },
+                      onLongPress: () => _showMemberOptions(context, member),
                     ),
                   );
                 },
