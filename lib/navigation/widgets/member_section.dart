@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/member_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
@@ -11,36 +12,30 @@ class MemberSection extends StatefulWidget {
 }
 
 class _MemberSectionState extends State<MemberSection> {
-  List<Member> members = []; 
+  List<Member> members = [];
+  bool isLoading = true; // Used to track loading state
 
   @override
   void initState() {
     super.initState();
-    _fetchMembers(); 
+    _loadMembersFromDatabase(); // Load members when the widget is initialized
   }
 
-  Future<void> _fetchMembers() async {
-    final DatabaseReference _database =
-        FirebaseDatabase.instance.ref().child('members');
+  Future<void> _loadMembersFromDatabase() async {
+    DatabaseReference dbRef = FirebaseDatabase.instance.ref('members');
+    DatabaseEvent event = await dbRef.once();
 
-    DatabaseEvent snapshot = await _database.once();
-    DataSnapshot dataSnapshot = snapshot.snapshot;
-    Map<dynamic, dynamic>? memberData = dataSnapshot.value as Map<dynamic, dynamic>?;
-
-    if (memberData != null) {
-      members = memberData.entries
-          .map((entry) {
-            final memberMap = entry.value;
-            return Member.fromMap(memberMap, entry.key as String);
-          })
-          .toList();
-
-      if (members.length > 5) {
-        members = members.sublist(0, 5);
-      }
+    members.clear(); // Clear the existing members list
+    if (event.snapshot.exists) {
+      Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+      data.forEach((key, value) {
+        members.add(Member.fromMap(value, key));
+      });
     }
 
-    setState(() {});
+    setState(() {
+      isLoading = false; // Set loading to false once the data is fetched
+    });
   }
 
   Future<void> _deleteMember(String memberId) async {
@@ -87,9 +82,9 @@ class _MemberSectionState extends State<MemberSection> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Member List',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -99,7 +94,7 @@ class _MemberSectionState extends State<MemberSection> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MembersScreen(),
+                    builder: (context) => const MembersScreen(),
                   ),
                 );
               },
@@ -114,49 +109,58 @@ class _MemberSectionState extends State<MemberSection> {
           ],
         ),
         const SizedBox(height: 10),
-        Expanded(
-          child: ListView.builder(
-            itemCount: members.length,
-            itemBuilder: (context, index) {
-              final member = members[index];
-              return Column(
-                children: [
-                  MemberItem(
-                    memberName: member.name, 
-                    positiveAmount: 'K200', 
-                    negativeAmount: 'K150', 
-                    memberWard: member.ward, 
-                    avatar: CircleAvatar(
-                      backgroundColor: member.color, 
-                      child: Text(
-                        member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+        
+        isLoading 
+          ? const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), 
+              ),
+            )
+          : Expanded(
+              child: ListView.builder(
+                itemCount: members.length > 5 ? 5 : members.length, // Limit to 5 members
+                itemBuilder: (context, index) {
+                  final member = members[index];
+                  return Column(
+                    children: [
+                      MemberItem(
+                        member: member, // Pass the full member object
+                        memberName: member.name, 
+                        positiveAmount: member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid).toStringAsFixed(2), // Dynamically calculate positive amount
+                        negativeAmount: member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken).toStringAsFixed(2), // Dynamically calculate negative amount
+                        memberWard: member.ward, 
+                        avatar: CircleAvatar(
+                          backgroundColor: member.color, 
+                          child: Text(
+                            member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
+                        onDelete: () => _showDeleteConfirmationDialog(member),
                       ),
-                    ),
-                    onDelete: () => _showDeleteConfirmationDialog(member),
-                  ),
-                  const Divider(),
-                ],
-              );
-            },
-          ),
-        ),
+                      const Divider(),
+                    ],
+                  );
+                },
+              ),
+            ),
       ],
     );
   }
 }
 
 class MemberItem extends StatelessWidget {
-  final String memberName; 
+  final String memberName;
   final String positiveAmount;
   final String negativeAmount;
-  final String memberWard; 
+  final String memberWard;
   final Widget avatar;
-  final VoidCallback onDelete; 
+  final VoidCallback onDelete;
+  final Member member; // Member object is added here
 
   const MemberItem({
     super.key,
@@ -165,7 +169,8 @@ class MemberItem extends StatelessWidget {
     required this.negativeAmount,
     required this.memberWard,
     required this.avatar,
-    required this.onDelete, 
+    required this.onDelete,
+    required this.member, // Member object is passed here
   });
 
   @override
@@ -175,7 +180,7 @@ class MemberItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
         leading: avatar,
         title: Text(
           memberName,
@@ -212,6 +217,22 @@ class MemberItem extends StatelessWidget {
             ),
           ],
         ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MemberDetailsScreen(
+                memberId: member.id, // Pass the memberId
+                memberName: member.name,
+                memberPhone: member.phone,
+                memberEmail: member.email ?? 'No email',
+                memberWard: member.ward,
+                memberShares: member.shares.toString(),
+                noteDescription: member.noteDescription ?? 'No description',
+              ),
+            ),
+          );
+        },
       ),
     );
   }

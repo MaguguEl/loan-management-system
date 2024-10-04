@@ -9,6 +9,8 @@ class  DashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
+        backgroundColor: Colors.white, 
+        foregroundColor: Colors.black, 
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),

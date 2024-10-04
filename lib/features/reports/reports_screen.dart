@@ -8,9 +8,11 @@ class ReportsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
+        backgroundColor: Colors.white, 
+        foregroundColor: Colors.black, 
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(Icons.picture_as_pdf),
             onPressed: () {},
           )
         ],

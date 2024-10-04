@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/dashboard_screen.dart';
-import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
-import 'package:loan_management_system/features/member_management/member_list_screen.dart';
+import 'package:loan_management_system/features/member_management/member_screen.dart';
 import 'package:loan_management_system/features/reports/reports_screen.dart';
 import 'package:loan_management_system/navigation/posts_screen.dart';
 import 'package:loan_management_system/navigation/home_screen.dart';
@@ -16,16 +15,21 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentTab = 0;
 
-  // Initialize screens with dummy values for MembersScreen
   final List<Widget> screens = [
     const HomeScreen(),
     const DashboardScreen(),
     const ReportsScreen(),
-    MemberDetailsScreen(),
+    const MembersScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = const HomeScreen();
+
+  @override
+  void initState() {
+    super.initState();
+    currentScreen = screens[currentTab];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
         child: currentScreen,
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFF305CDE),
+        backgroundColor: const Color(0xFF305CDE),
         shape: const CircleBorder(),
         onPressed: () {
           Navigator.push(
@@ -55,27 +59,22 @@ class _MainScreenState extends State<MainScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildIconButton(Icons.home_filled, 'Home', 0, const HomeScreen()),
-            _buildIconButton(Icons.dashboard, 'Dashboard', 1, const DashboardScreen()),
-            _buildIconButton(Icons.table_view, 'Reports', 2, const ReportsScreen()),
-            _buildIconButton(
-              Icons.groups, 
-              'Members', 
-              3, 
-              MemberDetailsScreen()
-            ),
+            _buildIconButton(Icons.home_filled, 'Home', 0),
+            _buildIconButton(Icons.dashboard, 'Dashboard', 1),
+            _buildIconButton(Icons.table_view, 'Reports', 2),
+            _buildIconButton(Icons.groups, 'Members', 3),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildIconButton(IconData icon, String label, int tabIndex, Widget screen) {
+  Widget _buildIconButton(IconData icon, String label, int tabIndex) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          currentScreen = screen;
           currentTab = tabIndex;
+          currentScreen = screens[tabIndex];
         });
       },
       child: Column(
@@ -83,12 +82,13 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Icon(
             icon,
-            color: currentTab == tabIndex ? Color(0xFF305CDE) : Colors.grey,
+            color: currentTab == tabIndex ? const Color(0xFF305CDE) : Colors.grey,
           ),
           Text(
             label,
             style: TextStyle(
-              color: currentTab == tabIndex ? Color(0xFF305CDE) : Colors.grey,
+              color: currentTab == tabIndex ? const Color(0xFF305CDE) : Colors.grey,
+              fontSize: 13
             ),
           ),
         ],
