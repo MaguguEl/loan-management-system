@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart'; // Import Firebase Database
+import 'dart:math';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
+import 'package:loan_management_system/features/member_management/member_screen.dart';
 
 class AddMemberForm extends StatefulWidget {
-  final Function onMemberAdded; // Callback function
+  final Function onMemberAdded;
 
   const AddMemberForm({Key? key, required this.onMemberAdded}) : super(key: key);
 
@@ -20,7 +22,6 @@ class _AddMemberFormState extends State<AddMemberForm> {
   final TextEditingController sharesController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
-  // Reference to Firebase Realtime Database
   final DatabaseReference _database = FirebaseDatabase.instance.ref().child('members');
 
   @override
@@ -36,32 +37,31 @@ class _AddMemberFormState extends State<AddMemberForm> {
 
   Future<void> _saveMember() async {
     if (_formKey.currentState!.validate()) {
+      Color randomColor = Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+
       Member newMember = Member(
-        id: '', // This will be set after saving to Firebase
+        id: '',
         name: nameController.text,
         phone: phoneController.text,
         email: emailController.text,
         ward: wardController.text,
         shares: sharesController.text,
         noteDescription: noteController.text,
+        color: randomColor,
       );
 
-      // Save member data to Firebase and get the new key
-      var newMemberRef = _database.push(); // Get a reference to a new location
-      await newMemberRef.set({
-        'name': newMember.name,
-        'phone': newMember.phone,
-        'email': newMember.email,
-        'ward': newMember.ward,
-        'shares': newMember.shares,
-        'noteDescription': newMember.noteDescription,
-      });
+      var newMemberRef = _database.push(); 
+      await newMemberRef.set(newMember.toMap());
+      newMember.id = newMemberRef.key ?? '';
 
-      // Set the ID of the new member
-      newMember.id = newMemberRef.key ?? ''; // Set the ID
-
-      // Call the callback function to refresh the member list
       widget.onMemberAdded();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MembersScreen(),
+        ),
+      );
     }
   }
 
@@ -69,7 +69,7 @@ class _AddMemberFormState extends State<AddMemberForm> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -117,6 +117,7 @@ class _AddMemberFormState extends State<AddMemberForm> {
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
+        cursorColor: Colors.blue,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey),

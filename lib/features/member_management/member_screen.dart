@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math'; 
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
@@ -14,8 +14,10 @@ class MembersScreen extends StatefulWidget {
 class _MembersScreenState extends State<MembersScreen> {
   List<Member> members = [];
   String searchQuery = '';
-  String sortingCriteria = 'Name';
-  String? selectedWard;
+  bool isLoading = true;
+  String sortBy = 'name';
+  bool isAscending = true; // Track the sorting order
+  bool isSearchActive = false;
 
   @override
   void initState() {
@@ -26,53 +28,18 @@ class _MembersScreenState extends State<MembersScreen> {
   Future<void> _loadMembersFromDatabase() async {
     DatabaseReference dbRef = FirebaseDatabase.instance.ref('members');
     DatabaseEvent event = await dbRef.once();
-    members.clear();
 
+    members.clear();
     if (event.snapshot.exists) {
       Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
       data.forEach((key, value) {
-        members.add(Member.fromMap(value, key)); 
+        members.add(Member.fromMap(value, key));
       });
     }
 
-    setState(() {});
-  }
-
-  Future<void> _showMemberOptions(BuildContext context, Member member) async {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Edit Member'),
-              onTap: () {
-                Navigator.pop(context);
-                // Navigate to member detail screen to edit
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => MemberDetailScreen(member: member),
-                //   ),
-                // ).then((_) {
-                //   _loadMembersFromDatabase(); // Refresh the member list after editing
-                // });
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete),
-              title: const Text('Delete Member'),
-              onTap: () {
-                Navigator.pop(context);
-                _showDeleteConfirmationDialog(member);
-              },
-            ),
-          ],
-        );
-      },
-    );
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> _showDeleteConfirmationDialog(Member member) async {
@@ -121,27 +88,25 @@ class _MembersScreenState extends State<MembersScreen> {
     );
   }
 
+  void _sortMembers() {
+    if (sortBy == 'name') {
+      members.sort((a, b) => isAscending 
+          ? a.name.compareTo(b.name) 
+          : b.name.compareTo(a.name));
+    } else if (sortBy == 'shares') {
+      members.sort((a, b) => isAscending 
+          ? a.shares.compareTo(b.shares) 
+          : b.shares.compareTo(a.shares));
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredMembers = members.where((member) {
-      final matchesSearch = member.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          member.phone.contains(searchQuery);
-      final matchesWard = selectedWard == null || member.ward == selectedWard;
-      return matchesSearch && matchesWard;
+      return member.name.toLowerCase().contains(searchQuery.toLowerCase()) || 
+             member.phone.contains(searchQuery);
     }).toList();
-
-    filteredMembers.sort((a, b) {
-      switch (sortingCriteria) {
-        case 'Name':
-          return a.name.compareTo(b.name);
-        case 'Phone':
-          return a.phone.compareTo(b.phone);
-        case 'Ward':
-          return a.ward.compareTo(b.ward);
-        default:
-          return 0;
-      }
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -150,109 +115,176 @@ class _MembersScreenState extends State<MembersScreen> {
         foregroundColor: Colors.black,
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(Icons.search),
             onPressed: () {
-              // You can implement sorting or filtering options here if needed
+              setState(() {
+                isSearchActive = !isSearchActive;
+                if (!isSearchActive) {
+                  searchQuery = '';
+                }
+              });
             },
+          ),
+          PopupMenuButton<String>(
+            color: Colors.white,
+            onSelected: (String value) {
+              // Update sorting order based on the selection
+              if (value == 'A-Z' || value == 'Z-A') {
+                isAscending = (value == 'A-Z');
+              } else {
+                sortBy = value;
+              }
+              _sortMembers();
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'A-Z',
+                  child: Text('Sort by A-Z'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Z-A',
+                  child: Text('Sort by Z-A'),
+                ),
+              ];
+            },
+            icon: const Icon(Icons.sort),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Search Members',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.separated(
-                itemCount: filteredMembers.length,
-                itemBuilder: (context, index) {
-                  final member = filteredMembers[index];
-                  return Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.zero,
-                    margin: EdgeInsets.zero,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                      leading: CircleAvatar(
-                        backgroundColor: getRandomColor(), // Generates a random color
-                        child: Text(
-                          member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
+      body: isLoading 
+        ? Center(child: CircularProgressIndicator(color: Colors.blue))
+        : Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                if (isSearchActive)
+                  TextField(
+                    cursorColor: Colors.blue,
+                    decoration: InputDecoration(
+                      labelText: 'Search Members',
+                      labelStyle: const TextStyle(color: Colors.grey),
+                      floatingLabelStyle: const TextStyle(color: Colors.blueAccent),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.blue), 
                       ),
-                      title: Text(member.name),
-                      subtitle: Text('${member.phone} | ${member.ward}'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                '+150',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              Text(
-                                '-200',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.more_vert),
-                            onPressed: () {
-                              _showMemberOptions(context, member);
-                            },
-                          ),
-                        ],
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.blueAccent),
                       ),
-                      onTap: () {
-                        // Navigating to MemberDetailsScreen with member details
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MemberDetailsScreen(
-                              memberName: member.name,
-                              memberPhone: member.phone,
-                              memberEmail: member.email ?? 'No email',
-                              memberWard: member.ward,
-                              memberShares: member.shares.toString(),
-                              noteDescription: member.noteDescription ?? 'No description',
+                      filled: true,
+                      fillColor: Colors.transparent, 
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                  ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: filteredMembers.length,
+                    itemBuilder: (context, index) {
+                      final member = filteredMembers[index];
+                      return Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                          leading: CircleAvatar(
+                            backgroundColor: getRandomColor(),
+                            child: Text(
+                              member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ),
-                        );
-                      },
-                      onLongPress: () => _showMemberOptions(context, member),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) => const Divider(),
-              ),
-            ),
-          ],
+                          title: Text(member.name),
+                          subtitle: Text('${member.phone} | ${member.ward}'),
+                          // In the trailing section of the ListTile
+trailing: Row(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          '+${member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid).toStringAsFixed(2)}', // Dynamically display total paid
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
         ),
+        Text(
+          '-${member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken).toStringAsFixed(2)}', // Dynamically display total taken
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+        ),
+      ],
+    ),
+    const SizedBox(width: 8),
+    Align(
+      alignment: Alignment.centerRight,
+      child: PopupMenuButton<String>(
+        onSelected: (String value) {
+          if (value == 'edit') {
+            // Navigate to edit member screen
+          } else if (value == 'delete') {
+            _showDeleteConfirmationDialog(member);
+          }
+        },
+        itemBuilder: (BuildContext context) {
+          return [
+            const PopupMenuItem<String>(
+              value: 'edit',
+              child: Text('Edit Member'),
+            ),
+            const PopupMenuItem<String>(
+              value: 'delete',
+              child: Text('Delete Member'),
+            ),
+          ];
+        },
+        icon: const Icon(Icons.more_vert),
+        color: Colors.white,
       ),
+    ),
+  ],
+),
+
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MemberDetailsScreen(
+                                  memberId: member.id,
+                                  memberName: member.name,
+                                  memberPhone: member.phone,
+                                  memberEmail: member.email ?? 'No email',
+                                  memberWard: member.ward,
+                                  memberShares: member.shares.toString(),
+                                  noteDescription: member.noteDescription ?? 'No description',
+                                ),
+                              ),
+                            );
+                          },
+                          onLongPress: () => _showDeleteConfirmationDialog(member),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
+                  ),
+                ),
+              ],
+            ),
+          ),
     );
   }
 }

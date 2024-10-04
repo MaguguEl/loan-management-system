@@ -8,14 +8,13 @@ class PostsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Posts'),
-        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -24,8 +23,8 @@ class PostsScreen extends StatelessWidget {
         child: ListView(
           children: [
             _buildCard(context, 'Add Members', AddMembersScreen()),
-            SizedBox(height: 16),
-            _buildCard(context, 'Add Transactions', AddTransactionsScreen()),
+            SizedBox(height: 10),
+            // _buildCard(context, 'Add Transactions', AddTransactionsScreen()),
           ],
         ),
       ),
@@ -41,15 +40,16 @@ class PostsScreen extends StatelessWidget {
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         elevation: 4,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Text(
             title,
             style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey,
+              fontSize: 16,
+              color: Colors.black,
             ),
           ),
         ),
