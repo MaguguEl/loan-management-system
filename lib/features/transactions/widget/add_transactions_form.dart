@@ -1,39 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
-class Loan {
-  String id;
-  double loanAmount;
-  double loanPaid;
-  double loanTaken;
-
-  Loan({
-    required this.id,
-    required this.loanAmount,
-    required this.loanPaid,
-    required this.loanTaken,
-  });
-
-  factory Loan.fromMap(Map<dynamic, dynamic> map, String id) {
-    return Loan(
-      id: id,
-      loanAmount: map['loanAmount'] ?? 0.0,
-      loanPaid: map['loanPaid'] ?? 0.0,
-      loanTaken: map['loanTaken'] ?? 0.0,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'loanAmount': loanAmount,
-      'loanPaid': loanPaid,
-      'loanTaken': loanTaken,
-    };
-  }
-}
+import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
 class AddTransactionsForm extends StatefulWidget {
-  final String memberId; // The member's ID to store the transaction under
+  final String memberId;
 
   const AddTransactionsForm({Key? key, required this.memberId}) : super(key: key);
 
@@ -44,8 +14,8 @@ class AddTransactionsForm extends StatefulWidget {
 class _AddTransactionsFormState extends State<AddTransactionsForm> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
-  String? _selectedTransactionType; // For loan paid or loan taken
-  DateTime? _selectedDate; // To store the selected date
+  String? _selectedTransactionType;
+  DateTime? _selectedDate;
 
   @override
   void dispose() {
@@ -68,6 +38,20 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
     }
   }
 
+  // Method to calculate interest based on the amount
+  double _calculateInterest(double amount) {
+    if (amount < 100000) {
+      return 0.0; // No interest
+    } else if (amount >= 100000 && amount < 1000000) {
+      return amount * 0.05; // 5% interest
+    } else if (amount >= 1000000 && amount < 3000000) {
+      return amount * 0.10; // 10% interest
+    } else if (amount >= 3000000) {
+      return amount * 0.14; // 14% interest
+    }
+    return 0.0; // Default case
+  }
+
   // Method to add a transaction (loan)
   Future<void> _addTransaction() async {
     if (_formKey.currentState!.validate()) {
@@ -80,14 +64,21 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
       // Create a new Loan object based on the selected transaction type
       Loan newLoan;
       if (_selectedTransactionType == 'Loan Taken') {
-        newLoan = Loan(id: loanId, loanAmount: amount, loanPaid: 0.0, loanTaken: amount);
+        double interest = _calculateInterest(amount);
+        newLoan = Loan(
+          id: loanId,
+          loanAmount: amount + interest, // Store the total amount including interest
+          loanPaid: 0.0,
+          loanTaken: amount, // Store the amount taken as a loan
+        );
       } else {
-        newLoan = Loan(id: loanId, loanAmount: 0.0, loanPaid: amount, loanTaken: 0.0);
+        newLoan = Loan(
+          id: loanId,
+          loanAmount: 0.0,
+          loanPaid: amount, // Store the amount paid back
+          loanTaken: 0.0,
+        );
       }
-
-      // Debugging logs
-      print('Selected Transaction Type: $_selectedTransactionType');
-      print('Entered Amount: $amount');
 
       // Store the new loan in Firebase
       await memberRef.child(loanId).set(newLoan.toMap());
@@ -98,11 +89,8 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
         _selectedDate = null;
         _selectedTransactionType = null;
       });
-      
-      // Call refresh method (make sure to implement this in MemberDetailsScreen)
+
       Navigator.pop(context);
-      // You may need to add a callback or a method in MemberDetailsScreen to refresh data
-      // For example: MemberDetailsScreen.refreshLoanData(widget.memberId);
     }
   }
 
@@ -118,6 +106,8 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
             children: [
               // Transaction Type Dropdown
               DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
+                focusColor: Colors.white,
                 value: _selectedTransactionType,
                 hint: const Text('Select Transaction Type'),
                 items: [
@@ -142,9 +132,20 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
+                cursorColor: Colors.grey,
                 decoration: InputDecoration(
                   labelText: 'Amount',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Colors.grey),
+                  floatingLabelStyle: TextStyle(color: Colors.blueAccent),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    borderSide: BorderSide(color: Colors.blueAccent),
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -156,22 +157,22 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
               const SizedBox(height: 16),
 
               TextButton(
-  onPressed: () => _selectDate(context),
-  style: TextButton.styleFrom(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-    side: const BorderSide(color: Colors.grey),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
-    ),
-    backgroundColor: Colors.white, // Optional: change background color if needed
-  ),
-  child: Text(
-    _selectedDate != null
-        ? '${_selectedDate!.toLocal()}'.split(' ')[0]
-        : 'Select Date',
-    style: const TextStyle(fontSize: 16),
-  ),
-),
+                onPressed: () => _selectDate(context),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  side: const BorderSide(color: Colors.grey),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+                child: Text(
+                  _selectedDate != null
+                      ? '${_selectedDate!.toLocal()}'.split(' ')[0]
+                      : 'Select Date',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
 
               const SizedBox(height: 16),
 

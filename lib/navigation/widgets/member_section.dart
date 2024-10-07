@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/member_screen.dart';
@@ -23,18 +23,20 @@ class _MemberSectionState extends State<MemberSection> {
 
   Future<void> _loadMembersFromDatabase() async {
     DatabaseReference dbRef = FirebaseDatabase.instance.ref('members');
-    DatabaseEvent event = await dbRef.once();
+    
+    // Set up a listener for changes in the database
+    dbRef.onValue.listen((DatabaseEvent event) {
+      members.clear(); // Clear the existing members list
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          members.add(Member.fromMap(value, key));
+        });
+      }
 
-    members.clear(); // Clear the existing members list
-    if (event.snapshot.exists) {
-      Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-      data.forEach((key, value) {
-        members.add(Member.fromMap(value, key));
+      setState(() {
+        isLoading = false; // Set loading to false once the data is fetched
       });
-    }
-
-    setState(() {
-      isLoading = false; // Set loading to false once the data is fetched
     });
   }
 
@@ -126,8 +128,8 @@ class _MemberSectionState extends State<MemberSection> {
                       MemberItem(
                         member: member, // Pass the full member object
                         memberName: member.name, 
-                        positiveAmount: member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid).toStringAsFixed(2), // Dynamically calculate positive amount
-                        negativeAmount: member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken).toStringAsFixed(2), // Dynamically calculate negative amount
+                        positiveAmount: member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid).toStringAsFixed(2), // Calculate total paid
+                        negativeAmount: (-member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken)).toStringAsFixed(2), // Calculate total taken as a negative amount
                         memberWard: member.ward, 
                         avatar: CircleAvatar(
                           backgroundColor: member.color, 
@@ -175,6 +177,9 @@ class MemberItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double totalPaid = double.tryParse(positiveAmount) ?? 0;
+    double loanBalance = member.loans.fold<double>(0, (sum, loan) => sum + (loan.loanTaken - loan.loanPaid));
+
     return Container(
       width: MediaQuery.of(context).size.width - 32,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -200,7 +205,7 @@ class MemberItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '+$positiveAmount',
+              '+ K$positiveAmount',
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -208,8 +213,10 @@ class MemberItem extends StatelessWidget {
               ),
             ),
             Text(
-              '-$negativeAmount',
-              style: const TextStyle(
+              totalPaid > 0
+                ? '- K${loanBalance.toStringAsFixed(2)}' // Show loan balance if there are payments
+                : '- K${negativeAmount}', // Show total taken if no payments have been made
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.red,

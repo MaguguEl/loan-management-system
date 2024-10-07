@@ -81,10 +81,10 @@ class _AddMemberFormState extends State<AddMemberForm> {
               ),
               const SizedBox(height: 16),
               _buildTextField('Name', nameController),
-              _buildTextField('Phone', phoneController),
-              _buildTextField('Email', emailController),
+              _buildTextField('Phone', phoneController, keyboardType: TextInputType.number,),
+              _buildTextField('Email (Optional)', emailController),
               _buildTextField('Ward', wardController),
-              _buildTextField('Shares', sharesController),
+              _buildTextField('Shares', sharesController, keyboardType: TextInputType.number,),
               _buildTextField('Notes (Optional)', noteController, maxLines: 3),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -111,13 +111,14 @@ class _AddMemberFormState extends State<AddMemberForm> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1}) {
+  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1, TextInputType? keyboardType}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
-        cursorColor: Colors.blue,
+       keyboardType: keyboardType,
+        cursorColor: Colors.grey,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(color: Colors.grey),

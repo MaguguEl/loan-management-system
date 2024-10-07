@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/member_management/add_member_screen.dart';
-import 'package:loan_management_system/features/transactions/add_transaction_screen.dart';
 
 class PostsScreen extends StatelessWidget {
   @override
@@ -24,7 +23,6 @@ class PostsScreen extends StatelessWidget {
           children: [
             _buildCard(context, 'Add Members', AddMembersScreen()),
             SizedBox(height: 10),
-            // _buildCard(context, 'Add Transactions', AddTransactionsScreen()),
           ],
         ),
       ),

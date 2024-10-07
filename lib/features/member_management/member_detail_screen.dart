@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/model/member_model.dart';
 import 'package:loan_management_system/features/transactions/add_transaction_screen.dart';
 
 class MemberDetailsScreen extends StatefulWidget {
   final String memberId;
-  final String memberName; 
-  final String memberPhone; 
-  final String memberEmail; 
-  final String memberWard; 
-  final String memberShares; 
-  final String noteDescription; 
+  final String memberName;
+  final String memberPhone;
+  final String memberEmail;
+  final String memberWard;
+  final String memberShares;
+  final String noteDescription;
 
   const MemberDetailsScreen({
     Key? key,
@@ -30,39 +31,54 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
   double loanBalance = 0.0;
   double totalPaid = 0.0;
   double totalTaken = 0.0;
+  double totalInterest = 0.0;
 
-  final DatabaseReference _loansRef = FirebaseDatabase.instance.ref().child('members');
+  late DatabaseReference _loansRef;
+  late Stream<DatabaseEvent> _loansStream;
 
   @override
   void initState() {
     super.initState();
-    _fetchLoanData();
+    _loansRef = FirebaseDatabase.instance.ref().child('members').child(widget.memberId).child('loans');
+    _loansStream = _loansRef.onValue; // Listen for loan updates
+    _listenForLoanUpdates();
   }
 
-  Future<void> _fetchLoanData() async {
-    final snapshot = await _loansRef.child(widget.memberId).child('loans').once();
+  void _listenForLoanUpdates() {
+    _loansStream.listen((DatabaseEvent event) {
+      if (event.snapshot.value != null) {
+        final loans = event.snapshot.value as Map<dynamic, dynamic>;
 
-    if (snapshot.snapshot.value != null) {
-      final loans = snapshot.snapshot.value as Map<dynamic, dynamic>;
+        double paid = 0.0;
+        double taken = 0.0;
+        double interest = 0.0;
 
-      double paid = 0.0;
-      double taken = 0.0;
+        loans.forEach((key, value) {
+          paid += (value['loanPaid'] ?? 0.0) as double;
+          taken += (value['loanTaken'] ?? 0.0) as double;
+          interest += Loan.calculateInterest(value['loanTaken'] ?? 0.0); // Use public method to calculate interest
+        });
 
-      loans.forEach((key, value) {
-        // Check if 'loanPaid' and 'loanTaken' exist in the loan data
-        paid += (value['loanPaid'] ?? 0.0) as double;
-        taken += (value['loanTaken'] ?? 0.0) as double;
-      });
-
-      setState(() {
-        totalPaid = paid;
-        totalTaken = taken;
-        loanBalance = totalTaken - totalPaid; // Calculate loan balance
-      });
-    }
+        setState(() {
+          totalPaid = paid;
+          totalTaken = taken;
+          totalInterest = interest;
+          loanBalance = totalTaken - totalPaid + totalInterest; // Calculate the loan balance
+        });
+      } else {
+        setState(() {
+          loanBalance = 0.0;
+          totalPaid = 0.0;
+          totalTaken = 0.0;
+          totalInterest = 0.0;
+        });
+      }
+    }, onError: (error) {
+      // Handle error appropriately, if needed
+    });
   }
-
-  @override
+  
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
@@ -93,7 +109,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.blue.shade700,
-                    child: Icon(Icons.person, color: Colors.white, size: 40),
+                    child: const Icon(Icons.person, color: Colors.white, size: 40),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -133,7 +149,6 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                   const Icon(Icons.more_horiz),
                 ],
               ),
-
               const SizedBox(height: 16),
               _buildLoanBalanceCard(),
               const SizedBox(height: 16),
@@ -197,16 +212,24 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Loan Paid (+)'),
-                Text('K${totalPaid.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
+                const Text('Loan Paid'),
+                Text('+ K${totalPaid.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
               ],
             ),
             const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Loan Taken (-)'),
-                Text('K${totalTaken.toStringAsFixed(2)}', style: const TextStyle(color: Colors.red)),
+                const Text('Interest'),
+                Text('K${totalInterest.toStringAsFixed(2)}', style: const TextStyle(color: Colors.grey)),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Loan Taken'),
+                Text('- K${totalTaken.toStringAsFixed(2)}', style: const TextStyle(color: Colors.red)),
               ],
             ),
             const SizedBox(height: 10),
@@ -217,13 +240,13 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddTransactionScreen(memberId: widget.memberId), // Remove 'const' here
+                      builder: (context) => AddTransactionScreen(memberId: widget.memberId),
                     ),
                   );
                 },
                 child: const Text(
                   'ADD LOAN',
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color: Color(0xFF305CDE)),
                 ),
               ),
             ),
@@ -234,51 +257,31 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
   }
 
   Widget _buildAccountDetailCard(String title, String amount, Color backgroundColor, Color borderColor) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: borderColor, width: 2), // Border color
-      ),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.account_balance_wallet, color: borderColor, size: 30), // Icon representing the card
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      amount,
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Icon(Icons.arrow_forward_ios_sharp, color: Colors.grey), // Trailing arrow icon
-          ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: borderColor, width: 1.5),
+        ),
+        color: backgroundColor,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                amount,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
       ),
-      color: backgroundColor, // Light background color for each card
-    ),
-  );
-}
+    );
+  }
 }

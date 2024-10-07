@@ -16,7 +16,7 @@ class _MembersScreenState extends State<MembersScreen> {
   String searchQuery = '';
   bool isLoading = true;
   String sortBy = 'name';
-  bool isAscending = true; // Track the sorting order
+  bool isAscending = true;
   bool isSearchActive = false;
 
   @override
@@ -25,20 +25,20 @@ class _MembersScreenState extends State<MembersScreen> {
     _loadMembersFromDatabase();
   }
 
-  Future<void> _loadMembersFromDatabase() async {
+  void _loadMembersFromDatabase() {
     DatabaseReference dbRef = FirebaseDatabase.instance.ref('members');
-    DatabaseEvent event = await dbRef.once();
-
-    members.clear();
-    if (event.snapshot.exists) {
-      Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
-      data.forEach((key, value) {
-        members.add(Member.fromMap(value, key));
+    dbRef.onValue.listen((DatabaseEvent event) {
+      final List<Member> newMembers = [];
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic> data = event.snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          newMembers.add(Member.fromMap(value, key));
+        });
+      }
+      setState(() {
+        members = newMembers;
+        isLoading = false;
       });
-    }
-
-    setState(() {
-      isLoading = false;
     });
   }
 
@@ -73,9 +73,6 @@ class _MembersScreenState extends State<MembersScreen> {
   Future<void> _deleteMember(String memberId) async {
     DatabaseReference dbRef = FirebaseDatabase.instance.ref('members/$memberId');
     await dbRef.remove();
-    setState(() {
-      members.removeWhere((member) => member.id == memberId);
-    });
   }
 
   Color getRandomColor() {
@@ -128,7 +125,6 @@ class _MembersScreenState extends State<MembersScreen> {
           PopupMenuButton<String>(
             color: Colors.white,
             onSelected: (String value) {
-              // Update sorting order based on the selection
               if (value == 'A-Z' || value == 'Z-A') {
                 isAscending = (value == 'A-Z');
               } else {
@@ -188,6 +184,12 @@ class _MembersScreenState extends State<MembersScreen> {
                     itemCount: filteredMembers.length,
                     itemBuilder: (context, index) {
                       final member = filteredMembers[index];
+                      
+                      // Calculate total loan taken and paid
+                      double totalLoanTaken = member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken);
+                      double totalLoanPaid = member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid);
+                      double loanBalance = totalLoanTaken - totalLoanPaid; // Calculate loan balance
+                      
                       return Container(
                         width: double.infinity,
                         padding: EdgeInsets.zero,
@@ -202,63 +204,65 @@ class _MembersScreenState extends State<MembersScreen> {
                             ),
                           ),
                           title: Text(member.name),
-                          subtitle: Text('${member.phone} | ${member.ward}'),
-                          // In the trailing section of the ListTile
-trailing: Row(
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          '+${member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid).toStringAsFixed(2)}', // Dynamically display total paid
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
-          ),
-        ),
-        Text(
-          '-${member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken).toStringAsFixed(2)}', // Dynamically display total taken
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.red,
-          ),
-        ),
-      ],
-    ),
-    const SizedBox(width: 8),
-    Align(
-      alignment: Alignment.centerRight,
-      child: PopupMenuButton<String>(
-        onSelected: (String value) {
-          if (value == 'edit') {
-            // Navigate to edit member screen
-          } else if (value == 'delete') {
-            _showDeleteConfirmationDialog(member);
-          }
-        },
-        itemBuilder: (BuildContext context) {
-          return [
-            const PopupMenuItem<String>(
-              value: 'edit',
-              child: Text('Edit Member'),
-            ),
-            const PopupMenuItem<String>(
-              value: 'delete',
-              child: Text('Delete Member'),
-            ),
-          ];
-        },
-        icon: const Icon(Icons.more_vert),
-        color: Colors.white,
-      ),
-    ),
-  ],
-),
-
+                          subtitle: Text('${member.ward}'),
+                          // Replace the relevant part of the trailing widget in the ListTile
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '+ K${totalLoanPaid.toStringAsFixed(2)}', // Dynamically display total paid
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  // Show balance if there are payments, otherwise show total loan taken
+                                  Text(
+                                    totalLoanPaid > 0
+                                      ? '- K${loanBalance.toStringAsFixed(2)}' // Loan balance
+                                      : '- K${totalLoanTaken.toStringAsFixed(2)}', // Dynamically display total taken
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 8),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: PopupMenuButton<String>(
+                                  onSelected: (String value) {
+                                    if (value == 'edit') {
+                                      // Navigate to edit member screen
+                                    } else if (value == 'delete') {
+                                      _showDeleteConfirmationDialog(member);
+                                    }
+                                  },
+                                  itemBuilder: (BuildContext context) {
+                                    return [
+                                      const PopupMenuItem<String>(
+                                        value: 'edit',
+                                        child: Text('Edit Member'),
+                                      ),
+                                      const PopupMenuItem<String>(
+                                        value: 'delete',
+                                        child: Text('Delete Member'),
+                                      ),
+                                    ];
+                                  },
+                                  icon: const Icon(Icons.more_vert),
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
