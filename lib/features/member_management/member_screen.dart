@@ -90,10 +90,10 @@ class _MembersScreenState extends State<MembersScreen> {
       members.sort((a, b) => isAscending 
           ? a.name.compareTo(b.name) 
           : b.name.compareTo(a.name));
-    } else if (sortBy == 'shares') {
+    } else if (sortBy == 'phone') {
       members.sort((a, b) => isAscending 
-          ? a.shares.compareTo(b.shares) 
-          : b.shares.compareTo(a.shares));
+          ? a.phone.compareTo(b.phone) 
+          : b.phone.compareTo(a.phone));
     }
     setState(() {});
   }
@@ -273,7 +273,6 @@ class _MembersScreenState extends State<MembersScreen> {
                                   memberPhone: member.phone,
                                   memberEmail: member.email ?? 'No email',
                                   memberWard: member.ward,
-                                  memberShares: member.shares.toString(),
                                   noteDescription: member.noteDescription ?? 'No description',
                                 ),
                               ),

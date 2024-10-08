@@ -234,7 +234,6 @@ class MemberItem extends StatelessWidget {
                 memberPhone: member.phone,
                 memberEmail: member.email ?? 'No email',
                 memberWard: member.ward,
-                memberShares: member.shares.toString(),
                 noteDescription: member.noteDescription ?? 'No description',
               ),
             ),

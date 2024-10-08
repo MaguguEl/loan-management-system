@@ -19,7 +19,6 @@ class _AddMemberFormState extends State<AddMemberForm> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController wardController = TextEditingController();
-  final TextEditingController sharesController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
   final DatabaseReference _database = FirebaseDatabase.instance.ref().child('members');
@@ -30,7 +29,6 @@ class _AddMemberFormState extends State<AddMemberForm> {
     phoneController.dispose();
     emailController.dispose();
     wardController.dispose();
-    sharesController.dispose();
     noteController.dispose();
     super.dispose();
   }
@@ -43,10 +41,9 @@ class _AddMemberFormState extends State<AddMemberForm> {
         id: '',
         name: nameController.text,
         phone: phoneController.text,
-        email: emailController.text,
+        email: emailController.text.isEmpty ? null : emailController.text, // Set to null if empty
         ward: wardController.text,
-        shares: sharesController.text,
-        noteDescription: noteController.text,
+        noteDescription: noteController.text.isEmpty ? null : noteController.text, // Set to null if empty
         color: randomColor,
       );
 
@@ -82,10 +79,10 @@ class _AddMemberFormState extends State<AddMemberForm> {
               const SizedBox(height: 16),
               _buildTextField('Name', nameController),
               _buildTextField('Phone', phoneController, keyboardType: TextInputType.number,),
-              _buildTextField('Email (Optional)', emailController),
+              _buildTextField('Email (Optional)', emailController, isOptional: true),
               _buildTextField('Ward', wardController),
-              _buildTextField('Shares', sharesController, keyboardType: TextInputType.number,),
-              _buildTextField('Notes (Optional)', noteController, maxLines: 3),
+              // Removed Shares field as per your requirement
+              _buildTextField('Notes (Optional)', noteController, maxLines: 3, isOptional: true),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _saveMember,
@@ -111,13 +108,13 @@ class _AddMemberFormState extends State<AddMemberForm> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1, TextInputType? keyboardType}) {
+  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1, TextInputType? keyboardType, bool isOptional = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
-       keyboardType: keyboardType,
+        keyboardType: keyboardType,
         cursorColor: Colors.grey,
         decoration: InputDecoration(
           labelText: label,
@@ -134,10 +131,11 @@ class _AddMemberFormState extends State<AddMemberForm> {
           fillColor: Colors.transparent,
         ),
         validator: (value) {
-          if (value == null || value.isEmpty) {
+          // Only validate if not optional
+          if (!isOptional && (value == null || value.isEmpty)) {
             return 'Please enter $label';
           }
-          return null;
+          return null; // No error
         },
       ),
     );
