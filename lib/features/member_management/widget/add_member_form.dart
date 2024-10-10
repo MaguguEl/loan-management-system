@@ -81,7 +81,6 @@ class _AddMemberFormState extends State<AddMemberForm> {
               _buildTextField('Phone', phoneController, keyboardType: TextInputType.number,),
               _buildTextField('Email (Optional)', emailController, isOptional: true),
               _buildTextField('Ward', wardController),
-              // Removed Shares field as per your requirement
               _buildTextField('Notes (Optional)', noteController, maxLines: 3, isOptional: true),
               const SizedBox(height: 20),
               ElevatedButton(

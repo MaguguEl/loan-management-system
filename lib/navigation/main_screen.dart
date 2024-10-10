@@ -16,14 +16,14 @@ class _MainScreenState extends State<MainScreen> {
   int currentTab = 0;
 
   final List<Widget> screens = [
-    const HomeScreen(),
-    const DashboardScreen(),
-    const ReportsScreen(),
-    const MembersScreen(),
+    HomeScreen(),
+    DashboardScreen(),
+    ReportsScreen(),
+    MembersScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = const HomeScreen();
+  Widget currentScreen = HomeScreen();
 
   @override
   void initState() {
