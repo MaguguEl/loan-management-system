@@ -11,11 +11,17 @@ class ReportsScreen extends StatelessWidget {
         title: const Text('Reports'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        actions: [
+                actions: [
           IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
+            icon: Icon(Icons.picture_as_pdf),
             onPressed: () {
-              // Export report as PDF functionality
+              // Add functionality for exporting PDF here
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.grid_on),
+            onPressed: () {
+              // Add functionality for exporting EXEL here
             },
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 import 'package:loan_management_system/features/transactions/add_account_screen.dart';
 import 'package:loan_management_system/features/transactions/add_penalty_screen.dart';
@@ -193,6 +194,12 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
     });
   }
 
+    // Function to format numbers
+  String _formatNumber(double number) {
+    final formatter = NumberFormat('#,##0.00'); // Customize the format as needed
+    return formatter.format(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -277,25 +284,25 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                   children: [
                     _buildAccountDetailTile(
                       'Shares',
-                      'K${totalShare.toStringAsFixed(2)}',
+                      'K${_formatNumber(totalShare)}',
                       AddSharesScreen(memberId: widget.memberId),
                     ),
                     Divider(),
                     _buildAccountDetailTile(
                       'Dividend',
-                      'K${totalDividend.toStringAsFixed(2)}',
+                      'K${_formatNumber(totalDividend)}',
                       AddAccountScreen(memberId: widget.memberId),
                     ),
                     Divider(),
                     _buildAccountDetailTile(
                       'Welfare',
-                      'K${totalWelfare.toStringAsFixed(2)}',
+                      'K${_formatNumber(totalWelfare)}',
                       AddWelfareScreen(memberId: widget.memberId),
                     ),
                     Divider(),
                     _buildAccountDetailTile(
                       'Penalty',
-                      'K${totalPenalty.toStringAsFixed(2)}',
+                      'K${_formatNumber(totalPenalty)}',
                       AddPenaltyScreen(memberId: widget.memberId),
                     ),
                   ],
@@ -331,7 +338,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                   ),
                 ),
                 Text(
-                  'K${loanBalance.toStringAsFixed(2)}',
+                  'K${_formatNumber(loanBalance)}',
                   style: const TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
@@ -346,7 +353,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Loan Paid'),
-                Text('+ K${totalPaid.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
+                Text('+ K${_formatNumber(totalPaid)}', style: const TextStyle(color: Colors.green)),
               ],
             ),
             const SizedBox(height: 5),
@@ -354,7 +361,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Interest'),
-                Text('K${totalInterest.toStringAsFixed(2)}', style: const TextStyle(color: Colors.grey)),
+                Text('K${_formatNumber(totalInterest)}', style: const TextStyle(color: Colors.grey)),
               ],
             ),
             const SizedBox(height: 5),
@@ -362,7 +369,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Loan Taken'),
-                Text('- K${totalTaken.toStringAsFixed(2)}', style: const TextStyle(color: Colors.red)),
+                Text('- K${_formatNumber(totalTaken)}', style: const TextStyle(color: Colors.red)),
               ],
             ),
             const SizedBox(height: 10),
@@ -392,7 +399,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
   Widget _buildAccountDetailTile(String title, String amount, Widget screen) {
     return ListTile(
       contentPadding: const EdgeInsets.all(8.0),
-      leading: Icon(Icons.wallet_membership),
+      leading: Icon(Icons.account_balance_wallet,),
       title: Text(
         title,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

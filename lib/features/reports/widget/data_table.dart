@@ -11,6 +11,19 @@ class ReportTableScreen extends StatefulWidget {
 
 class _ReportTableScreenState extends State<ReportTableScreen> {
   List<DataRow> _memberRows = [];
+  int _totalMembers = 0;
+
+  // Variables to hold totals for each column
+  double _totalShares = 0;
+  double _totalDividends = 0;
+  double _totalSharesPlusDividend = 0;
+  double _totalLoanTaken = 0;
+  double _totalInterestOnLoan = 0;
+  double _totalLoanPlusInterest = 0;
+  double _totalLoanPaid = 0;
+  double _totalNetPay = 0;
+  double _totalWelfare = 0;
+  double _totalPunishment = 0;
 
   @override
   void initState() {
@@ -43,9 +56,28 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
               DataColumn(label: Text('Loan Paid', style: TextStyle(fontWeight: FontWeight.bold))),
               DataColumn(label: Text('Net Pay', style: TextStyle(fontWeight: FontWeight.bold))),
               DataColumn(label: Text('Welfare', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Punishment', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Penalty', style: TextStyle(fontWeight: FontWeight.bold))),
             ],
-            rows: _memberRows,
+            rows: [
+              ..._memberRows,
+              // Add footer row showing totals for each column
+              DataRow(
+                cells: [
+                  DataCell(Text('Total:', style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text('$_totalMembers members', style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalShares))),
+                  DataCell(Text(formatNumberWithCommas(_totalDividends))),
+                  DataCell(Text(formatNumberWithCommas(_totalSharesPlusDividend))),
+                  DataCell(Text(formatNumberWithCommas(_totalLoanTaken))),
+                  DataCell(Text(formatNumberWithCommas(_totalInterestOnLoan))),
+                  DataCell(Text(formatNumberWithCommas(_totalLoanPlusInterest))),
+                  DataCell(Text(formatNumberWithCommas(_totalLoanPaid))),
+                  DataCell(Text(formatNumberWithCommas(_totalNetPay))),
+                  DataCell(Text(formatNumberWithCommas(_totalWelfare))),
+                  DataCell(Text(formatNumberWithCommas(_totalPunishment))),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -66,10 +98,31 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
         return Member.fromMap(memberData, memberId);
       }).toList();
 
+      // Reset totals before recalculating
+      _resetTotals();
+
       setState(() {
+        _totalMembers = members.length;
         _memberRows = _createStyledRows(members);
+
+        // Calculate totals for each column
+        _calculateColumnTotals(members);
       });
     }
+  }
+
+  // Resets all total variables
+  void _resetTotals() {
+    _totalShares = 0;
+    _totalDividends = 0;
+    _totalSharesPlusDividend = 0;
+    _totalLoanTaken = 0;
+    _totalInterestOnLoan = 0;
+    _totalLoanPlusInterest = 0;
+    _totalLoanPaid = 0;
+    _totalNetPay = 0;
+    _totalWelfare = 0;
+    _totalPunishment = 0;
   }
 
   // Uses Member model data to populate DataRows
@@ -103,6 +156,22 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
         ],
       );
     }).toList();
+  }
+
+  // Calculates totals for each column based on member data
+  void _calculateColumnTotals(List<Member> members) {
+    for (var member in members) {
+      _totalShares += member.totalShares;
+      _totalDividends += member.totalDividends;
+      _totalSharesPlusDividend += member.totalShares + member.totalDividends;
+      _totalLoanTaken += member.totalTaken;
+      _totalInterestOnLoan += member.totalInterest;
+      _totalLoanPlusInterest += member.totalTaken + member.totalInterest;
+      _totalLoanPaid += member.totalPaid;
+      _totalNetPay += (member.totalShares + member.totalDividends) - (member.totalTaken + member.totalInterest);
+      _totalWelfare += member.totalWelfares;
+      _totalPunishment += member.totalPenalties;
+    }
   }
 
   DataCell _buildColoredCell(String text, {Color color = Colors.black}) {

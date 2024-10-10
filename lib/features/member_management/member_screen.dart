@@ -1,6 +1,7 @@
 import 'dart:math'; 
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
@@ -90,19 +91,26 @@ class _MembersScreenState extends State<MembersScreen> {
       members.sort((a, b) => isAscending 
           ? a.name.compareTo(b.name) 
           : b.name.compareTo(a.name));
-    } else if (sortBy == 'phone') {
+    } else if (sortBy == 'ward') {
       members.sort((a, b) => isAscending 
-          ? a.phone.compareTo(b.phone) 
-          : b.phone.compareTo(a.phone));
+          ? a.ward.compareTo(b.ward) 
+          : b.ward.compareTo(a.ward));
     }
     setState(() {});
+  }
+
+  
+    // Function to format numbers
+  String _formatNumber(double number) {
+    final formatter = NumberFormat('#,##0.00'); // Customize the format as needed
+    return formatter.format(number);
   }
 
   @override
   Widget build(BuildContext context) {
     final filteredMembers = members.where((member) {
       return member.name.toLowerCase().contains(searchQuery.toLowerCase()) || 
-             member.phone.contains(searchQuery);
+             member.ward.contains(searchQuery);
     }).toList();
 
     return Scaffold(
@@ -214,7 +222,7 @@ class _MembersScreenState extends State<MembersScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    '+ K${totalLoanPaid.toStringAsFixed(2)}', // Dynamically display total paid
+                                    '+ K${_formatNumber(totalLoanPaid)}', // Dynamically display total paid
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -224,8 +232,8 @@ class _MembersScreenState extends State<MembersScreen> {
                                   // Show balance if there are payments, otherwise show total loan taken
                                   Text(
                                     totalLoanPaid > 0
-                                      ? '- K${loanBalance.toStringAsFixed(2)}' // Loan balance
-                                      : '- K${totalLoanTaken.toStringAsFixed(2)}', // Dynamically display total taken
+                                      ? '- K${_formatNumber(loanBalance)}'
+                                      : '- K${_formatNumber(totalLoanTaken)}', // Dynamically display total taken
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,

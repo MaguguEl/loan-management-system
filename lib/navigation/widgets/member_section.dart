@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/member_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
@@ -76,6 +77,12 @@ class _MemberSectionState extends State<MemberSection> {
     );
   }
 
+  // Function to format numbers
+  String _formatNumber(double number) {
+    final formatter = NumberFormat('#,##0.00'); // Customize the format as needed
+    return formatter.format(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -111,7 +118,7 @@ class _MemberSectionState extends State<MemberSection> {
           ],
         ),
         const SizedBox(height: 10),
-        
+
         isLoading 
           ? const Center(
               child: CircularProgressIndicator(
@@ -123,13 +130,20 @@ class _MemberSectionState extends State<MemberSection> {
                 itemCount: members.length > 5 ? 5 : members.length, // Limit to 5 members
                 itemBuilder: (context, index) {
                   final member = members[index];
+                  String positiveAmount = _formatNumber(
+                    member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid)
+                  );
+                  String negativeAmount = _formatNumber(
+                    -member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken)
+                  );
+
                   return Column(
                     children: [
                       MemberItem(
                         member: member, // Pass the full member object
                         memberName: member.name, 
-                        positiveAmount: member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid).toStringAsFixed(2), // Calculate total paid
-                        negativeAmount: (-member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken)).toStringAsFixed(2), // Calculate total taken as a negative amount
+                        positiveAmount: positiveAmount, // Use formatted amount
+                        negativeAmount: negativeAmount, // Use formatted amount
                         memberWard: member.ward, 
                         avatar: CircleAvatar(
                           backgroundColor: member.color, 
@@ -143,6 +157,7 @@ class _MemberSectionState extends State<MemberSection> {
                           ),
                         ),
                         onDelete: () => _showDeleteConfirmationDialog(member),
+                        formatNumber: _formatNumber,
                       ),
                       const Divider(),
                     ],
@@ -162,7 +177,8 @@ class MemberItem extends StatelessWidget {
   final String memberWard;
   final Widget avatar;
   final VoidCallback onDelete;
-  final Member member; // Member object is added here
+  final Member member; 
+   final String Function(double) formatNumber;
 
   const MemberItem({
     super.key,
@@ -172,12 +188,13 @@ class MemberItem extends StatelessWidget {
     required this.memberWard,
     required this.avatar,
     required this.onDelete,
-    required this.member, // Member object is passed here
+    required this.member, 
+    required this.formatNumber,
   });
 
   @override
   Widget build(BuildContext context) {
-    double totalPaid = double.tryParse(positiveAmount) ?? 0;
+    double totalPaid = double.tryParse(positiveAmount.replaceAll(',', '')) ?? 0; // Remove commas for parsing
     double loanBalance = member.loans.fold<double>(0, (sum, loan) => sum + (loan.loanTaken - loan.loanPaid));
 
     return Container(
@@ -214,8 +231,8 @@ class MemberItem extends StatelessWidget {
             ),
             Text(
               totalPaid > 0
-                ? '- K${loanBalance.toStringAsFixed(2)}' // Show loan balance if there are payments
-                : '- K${negativeAmount}', // Show total taken if no payments have been made
+                ? '- K${formatNumber(loanBalance)}'
+                : '- K$negativeAmount', 
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -229,7 +246,7 @@ class MemberItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => MemberDetailsScreen(
-                memberId: member.id, // Pass the memberId
+                memberId: member.id, 
                 memberName: member.name,
                 memberPhone: member.phone,
                 memberEmail: member.email ?? 'No email',
