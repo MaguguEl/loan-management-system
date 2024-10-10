@@ -1,13 +1,62 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:loan_management_system/features/member_management/model/member_model.dart';
 import 'package:loan_management_system/features/transactions/shares.dart';
 import 'package:loan_management_system/navigation/app_drawer.dart';
 import 'package:loan_management_system/navigation/widgets/icon_buttons.dart';
 import 'package:loan_management_system/navigation/widgets/member_section.dart';
 import 'package:loan_management_system/navigation/widgets/net_pay_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  double _totalNetPay = 0;
+  double _totalLoansTaken = 0;
+  double _totalLoansPaid = 0;
+  List<Member> _members = []; // List to store members data
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMembersData(); // Fetch data on initialization
+  }
+
+  void _fetchMembersData() async {
+    DatabaseReference membersRef = FirebaseDatabase.instance.ref().child('members');
+    DataSnapshot snapshot = await membersRef.get();
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> membersMap = snapshot.value as Map<dynamic, dynamic>;
+
+      _members = membersMap.entries.map((entry) {
+        String memberId = entry.key;
+        Map<dynamic, dynamic> memberData = entry.value as Map<dynamic, dynamic>;
+        return Member.fromMap(memberData, memberId);
+      }).toList();
+
+      _calculateTotals(); // Calculate totals after fetching members
+
+      setState(() {}); // Update the UI
+    }
+  }
+
+  void _calculateTotals() {
+    // Reset totals before calculating
+    _totalNetPay = 0;
+    _totalLoansTaken = 0;
+    _totalLoansPaid = 0;
+
+    for (var member in _members) {
+      _totalLoansTaken += member.totalTaken;
+      _totalLoansPaid += member.totalPaid;
+      _totalNetPay += (member.totalShares + member.totalDividends) - 
+                      (member.totalTaken + member.totalInterest);
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +87,11 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const TotalNetPayCard(),
+              TotalNetPayCard(
+                  totalNetPay: _totalNetPay,
+                  totalLoansTaken: _totalLoansTaken,
+                  totalLoansPaid: _totalLoansPaid,
+                ),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
 class TotalNetPayCard extends StatelessWidget {
-  const TotalNetPayCard({super.key});
+  final double totalNetPay;
+  final double totalLoansTaken;
+  final double totalLoansPaid;
+
+  const TotalNetPayCard({
+    Key? key,
+    required this.totalNetPay,
+    required this.totalLoansTaken,
+    required this.totalLoansPaid,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +28,13 @@ class TotalNetPayCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(15),
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Combined Total Net Pay and its value into one Column
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -38,11 +46,10 @@ class TotalNetPayCard extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      // Add a Row for better alignment of Total Net Pay and K3000.00
                       Row(
                         children: [
                           Text(
-                            'K3000.00',
+                            formatNumberWithCommas(totalNetPay),
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -53,7 +60,6 @@ class TotalNetPayCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Account balance icon
                   Column(
                     children: [
                       Icon(Icons.account_balance_wallet, color: Colors.white),
@@ -77,7 +83,7 @@ class TotalNetPayCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'K2000.00',
+                        formatNumberWithCommas(totalLoansTaken),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -98,7 +104,7 @@ class TotalNetPayCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'K1500.00',
+                        formatNumberWithCommas(totalLoansPaid),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -115,4 +121,10 @@ class TotalNetPayCard extends StatelessWidget {
       ),
     );
   }
+}
+
+// Utility function to format numbers with commas
+String formatNumberWithCommas(double number) {
+  return number.toStringAsFixed(2).replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => "${m[1]},");
 }
