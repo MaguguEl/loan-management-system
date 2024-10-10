@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loan_management_system/features/reports/widget/data_table.dart';
 
 class ReportsScreen extends StatelessWidget {
   const ReportsScreen({super.key});
@@ -8,18 +9,19 @@ class ReportsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
-        backgroundColor: Colors.white, 
-        foregroundColor: Colors.black, 
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         actions: [
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () {},
-          )
+            onPressed: () {
+              // Export report as PDF functionality
+            },
+          ),
         ],
       ),
-      body: const Center(
-        child: Text('Reports Page Content'),
-      ),
+      body: const ReportTableScreen(),
     );
   }
 }
+
