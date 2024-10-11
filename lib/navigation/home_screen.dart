@@ -16,12 +16,12 @@ class _HomeScreenState extends State<HomeScreen> {
   double _totalNetPay = 0;
   double _totalLoansTaken = 0;
   double _totalLoansPaid = 0;
-  List<Member> _members = []; // List to store members data
+  List<Member> _members = []; 
 
   @override
   void initState() {
     super.initState();
-    _fetchMembersData(); // Fetch data on initialization
+    _fetchMembersData(); 
   }
 
   void _fetchMembersData() async {
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       _calculateTotals(); // Calculate totals after fetching members
 
-      setState(() {}); // Update the UI
+      setState(() {}); 
     }
   }
 
@@ -82,16 +82,16 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: SingleChildScrollView( // Add a scroll view
+      body: SingleChildScrollView( 
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               TotalNetPayCard(
-                  totalNetPay: _totalNetPay,
-                  totalLoansTaken: _totalLoansTaken,
-                  totalLoansPaid: _totalLoansPaid,
-                ),
+                totalNetPay: _totalNetPay,
+                totalLoansTaken: _totalLoansTaken,
+                totalLoansPaid: _totalLoansPaid,
+              ),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 30),
               SizedBox(
-                height: 300, // Set height for member section
+                height: 300, 
                 child: const MemberSection(),
               ),
             ],

@@ -31,60 +31,7 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
     _fetchMembersData();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 20.0,
-            horizontalMargin: 16.0,
-            headingRowHeight: 40.0,
-            dataRowHeight: 60.0,
-            columns: const [
-              DataColumn(label: Text('SR/NO', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Shares', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Dividend', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Shares + Dividend', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Loan Taken', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Interest on Loan', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Loan + Interest', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Loan Paid', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Net Pay', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Welfare', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Penalty', style: TextStyle(fontWeight: FontWeight.bold))),
-            ],
-            rows: [
-              ..._memberRows,
-              // Add footer row showing totals for each column
-              DataRow(
-                cells: [
-                  DataCell(Text('Total:', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataCell(Text('$_totalMembers members', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataCell(Text(formatNumberWithCommas(_totalShares))),
-                  DataCell(Text(formatNumberWithCommas(_totalDividends))),
-                  DataCell(Text(formatNumberWithCommas(_totalSharesPlusDividend))),
-                  DataCell(Text(formatNumberWithCommas(_totalLoanTaken))),
-                  DataCell(Text(formatNumberWithCommas(_totalInterestOnLoan))),
-                  DataCell(Text(formatNumberWithCommas(_totalLoanPlusInterest))),
-                  DataCell(Text(formatNumberWithCommas(_totalLoanPaid))),
-                  DataCell(Text(formatNumberWithCommas(_totalNetPay))),
-                  DataCell(Text(formatNumberWithCommas(_totalWelfare))),
-                  DataCell(Text(formatNumberWithCommas(_totalPunishment))),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Fetches member data from Firebase and maps it to Member objects
+   // Fetches member data from Firebase and maps it to Member objects
   void _fetchMembersData() async {
     DatabaseReference membersRef = FirebaseDatabase.instance.ref().child('members');
     DataSnapshot snapshot = await membersRef.get();
@@ -125,13 +72,88 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
     _totalPunishment = 0;
   }
 
+    // Calculates totals for each column based on member data
+  void _calculateColumnTotals(List<Member> members) {
+    for (var member in members) {
+      _totalShares += member.totalShares;
+      _totalDividends += member.totalDividends;
+      _totalSharesPlusDividend += member.totalShares + member.totalDividends;
+      _totalLoanTaken += member.totalTaken;
+      _totalInterestOnLoan += member.totalInterest;
+      _totalLoanPlusInterest += member.totalTaken + member.totalInterest;
+      _totalLoanPaid += member.totalPaid;
+      _totalNetPay += (member.totalShares + member.totalDividends) - (member.totalTaken + member.totalInterest);
+      _totalWelfare += member.totalWelfares;
+      _totalPunishment += member.totalPenalties;
+    }
+  }
+
+  // Utility function to format numbers with commas
+  String formatNumberWithCommas(double number) {
+    return number.toStringAsFixed(2).replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => "${m[1]},");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columnSpacing: 20.0,
+            horizontalMargin: 16.0,
+            headingRowHeight: 40.0,
+            dataRowHeight: 60.0,
+            columns: const [
+              DataColumn(label: Text('SR/NO', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Shares', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Dividend', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Shares + Dividend', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Loan Taken', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Interest on Loan', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Loan + Interest', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Loan Paid', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Net Pay', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Welfare', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Penalty', style: TextStyle(fontWeight: FontWeight.bold))),
+            ],
+            rows: [
+              ..._memberRows,
+              // Add footer row showing totals for each column
+             DataRow(
+                cells: [
+                  DataCell(Text('Total:', style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text('$_totalMembers members', style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalShares), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalDividends), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalSharesPlusDividend), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalLoanTaken), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalInterestOnLoan), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalLoanPlusInterest), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalLoanPaid), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalNetPay), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalWelfare), style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(formatNumberWithCommas(_totalPunishment), style: TextStyle(fontWeight: FontWeight.bold))),
+                ],
+              ),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   // Uses Member model data to populate DataRows
   List<DataRow> _createStyledRows(List<Member> members) {
     return members.asMap().entries.map((entry) {
       final index = entry.key;
       final member = entry.value;
 
-      // Calculations using model data (e.g., total shares + dividends, loan + interest, etc.)
       final double sharesPlusDividend = member.totalShares + member.totalDividends;
       final double loanPlusInterest = member.totalTaken + member.totalInterest;
       final double netPay = sharesPlusDividend - loanPlusInterest;
@@ -158,22 +180,6 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
     }).toList();
   }
 
-  // Calculates totals for each column based on member data
-  void _calculateColumnTotals(List<Member> members) {
-    for (var member in members) {
-      _totalShares += member.totalShares;
-      _totalDividends += member.totalDividends;
-      _totalSharesPlusDividend += member.totalShares + member.totalDividends;
-      _totalLoanTaken += member.totalTaken;
-      _totalInterestOnLoan += member.totalInterest;
-      _totalLoanPlusInterest += member.totalTaken + member.totalInterest;
-      _totalLoanPaid += member.totalPaid;
-      _totalNetPay += (member.totalShares + member.totalDividends) - (member.totalTaken + member.totalInterest);
-      _totalWelfare += member.totalWelfares;
-      _totalPunishment += member.totalPenalties;
-    }
-  }
-
   DataCell _buildColoredCell(String text, {Color color = Colors.black}) {
     return DataCell(
       Container(
@@ -187,8 +193,3 @@ class _ReportTableScreenState extends State<ReportTableScreen> {
   }
 }
 
-// Utility function to format numbers with commas
-String formatNumberWithCommas(double number) {
-  return number.toStringAsFixed(2).replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => "${m[1]},");
-}

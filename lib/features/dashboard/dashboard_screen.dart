@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/widget/barchart_widget.dart';
 
-class  DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
@@ -9,8 +9,8 @@ class  DashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        backgroundColor: Colors.white, 
-        foregroundColor: Colors.black, 
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
@@ -23,30 +23,52 @@ class  DashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Total Loan and Interests
-            const Row(
+            // Total Loan and Interests wrapped in Cards
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Total Loans', style: TextStyle(fontSize: 16)),
-                    Text('\$8,500', style: TextStyle(fontSize: 28)),
-                  ],
+                Card(
+                  color: Colors.white,
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Total Paid', style: TextStyle(fontSize: 16)),
+                        const SizedBox(height: 8), // Add space between the texts
+                        const Text('\$8,500', style: TextStyle(fontSize: 28)),
+                      ],
+                    ),
+                  ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Total Interests', style: TextStyle(fontSize: 16)),
-                    Text('\$3,800', style: TextStyle(fontSize: 28)),
-                  ],
+                Card(
+                  color: Colors.white,
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Total Taken', style: TextStyle(fontSize: 16)),
+                        const SizedBox(height: 8), // Add space between the texts
+                        const Text('\$3,800', style: TextStyle(fontSize: 28)),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
             const Text('Analytics', style: TextStyle(fontSize: 18)),
             Expanded(
-              child: BarChartWidget(), 
+              child: BarChartWidget(),
             ),
           ],
         ),

@@ -49,7 +49,7 @@ class TotalNetPayCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            formatNumberWithCommas(totalNetPay),
+                            formatNumber(totalNetPay),
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -83,7 +83,7 @@ class TotalNetPayCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        formatNumberWithCommas(totalLoansTaken),
+                        formatNumber(totalLoansTaken),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -104,7 +104,7 @@ class TotalNetPayCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        formatNumberWithCommas(totalLoansPaid),
+                        formatNumber(totalLoansPaid),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -124,7 +124,7 @@ class TotalNetPayCard extends StatelessWidget {
 }
 
 // Utility function to format numbers with commas
-String formatNumberWithCommas(double number) {
+String formatNumber(double number) {
   return number.toStringAsFixed(2).replaceAllMapped(
       RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => "${m[1]},");
 }

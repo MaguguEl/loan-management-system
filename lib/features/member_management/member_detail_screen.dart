@@ -7,6 +7,7 @@ import 'package:loan_management_system/features/transactions/add_penalty_screen.
 import 'package:loan_management_system/features/transactions/add_shares_screen.dart';
 import 'package:loan_management_system/features/transactions/add_transaction_screen.dart';
 import 'package:loan_management_system/features/transactions/add_welfare_screen.dart';
+import 'package:loan_management_system/features/transactions/model/loan_model.dart';
 
 class MemberDetailsScreen extends StatefulWidget {
   final String memberId;
