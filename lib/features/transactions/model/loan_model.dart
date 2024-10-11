@@ -3,14 +3,14 @@ class Loan {
   double loanAmount;
   double loanPaid;
   double loanTaken;
-  double interest; // Field to store interest
+  double interest;
 
   Loan({
     required this.id,
     required this.loanAmount,
     required this.loanPaid,
     required this.loanTaken,
-  }) : interest = _calculateInterest(loanAmount); // Calculate interest on instantiation
+  }) : interest = _calculateInterest(loanAmount); 
 
   // Public Interest Calculation based on loan amount
   static double _calculateInterest(double loanAmount) {
@@ -47,7 +47,7 @@ class Loan {
       'loanAmount': loanAmount,
       'loanPaid': loanPaid,
       'loanTaken': loanTaken,
-      'interest': interest, // Include interest in the map
+      'interest': interest,
     };
   }
 }

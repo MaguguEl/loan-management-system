@@ -1,63 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/transactions/model/dividend_model.dart';
+import 'package:loan_management_system/features/transactions/model/loan_model.dart';
 import 'package:loan_management_system/features/transactions/model/penalty_model.dart';
 import 'package:loan_management_system/features/transactions/model/shares_model.dart';
 import 'package:loan_management_system/features/transactions/model/welfare_model.dart';
-
-class Loan {
-  String id;
-  double loanAmount;
-  double loanPaid;
-  double loanTaken;
-  double interest; // Field to store interest
-
-  Loan({
-    required this.id,
-    required this.loanAmount,
-    required this.loanPaid,
-    required this.loanTaken,
-  }) : interest = _calculateInterest(loanAmount); // Calculate interest on instantiation
-
-  // Public Interest Calculation based on loan amount
-  static double _calculateInterest(double loanAmount) {
-    if (loanAmount < 100000) {
-      return 0.0;
-    } else if (loanAmount >= 100000 && loanAmount < 1000000) {
-      return loanAmount * 0.05; // 5% interest
-    } else if (loanAmount >= 1000000 && loanAmount < 3000000) {
-      return loanAmount * 0.10; // 10% interest
-    } else if (loanAmount >= 3000000) {
-      return loanAmount * 0.14; // 14% interest
-    }
-    return 0.0;
-  }
-
-  // Public method to calculate interest
-  static double calculateInterest(double loanAmount) {
-    return _calculateInterest(loanAmount);
-  }
-
-  // Factory method to create a Loan instance from Firebase data
-  factory Loan.fromMap(Map<dynamic, dynamic> map, String id) {
-    return Loan(
-      id: id,
-      loanAmount: map['loanAmount']?.toDouble() ?? 0.0,
-      loanPaid: map['loanPaid']?.toDouble() ?? 0.0,
-      loanTaken: map['loanTaken']?.toDouble() ?? 0.0,
-    );
-  }
-
-  // Converts a Loan object to a map for Firebase
-  Map<String, dynamic> toMap() {
-    return {
-      'loanAmount': loanAmount,
-      'loanPaid': loanPaid,
-      'loanTaken': loanTaken,
-      'interest': interest, // Include interest in the map
-    };
-  }
-}
 
 class Member {
   String id;
@@ -200,16 +147,19 @@ class Member {
       'ward': ward,
       'noteDescription': noteDescription,
       'color': color.value,
-      'loans': {for (var loan in loans) loan.id: loan.toMap()},  // Save loans to Firebase
-      'shares': {for (var share in shares) share.id: share.toMap()},  // Save shares to Firebase
-      'dividends': {for (var dividend in dividends) dividend.id: dividend.toMap()},  // Save dividends to Firebase
-      'welfares': {for (var welfare in welfares) welfare.id: welfare.toMap()},  // Save welfares to Firebase
-      'penalties': {for (var penalty in penalties) penalty.id: penalty.toMap()},  // Save penalties to Firebase
+      'loans': {for (var loan in loans) loan.id: loan.toMap()},
+      'shares': {for (var share in shares) share.id: share.toMap()},
+      'dividends': {for (var dividend in dividends) dividend.id: dividend.toMap()},
+      'welfares': {for (var welfare in welfares) welfare.id: welfare.toMap()},
+      'penalties': {for (var penalty in penalties) penalty.id: penalty.toMap()},
       'totalPaid': totalPaid,
       'totalTaken': totalTaken,
       'loanBalance': loanBalance,
       'totalInterest': totalInterest,
+      'totalShares': totalShares,
       'totalDividends': totalDividends,
+      'totalWelfares': totalWelfares,
+      'totalPenalties': totalPenalties,
     };
   }
 }
