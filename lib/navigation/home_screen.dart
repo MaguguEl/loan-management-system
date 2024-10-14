@@ -1,13 +1,16 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
+import 'package:loan_management_system/features/transactions/dividends.dart';
+import 'package:loan_management_system/features/transactions/penalty.dart';
 import 'package:loan_management_system/features/transactions/shares.dart';
-import 'package:loan_management_system/navigation/app_drawer.dart';
+import 'package:loan_management_system/features/transactions/welfare.dart';
 import 'package:loan_management_system/navigation/widgets/icon_buttons.dart';
 import 'package:loan_management_system/navigation/widgets/member_section.dart';
 import 'package:loan_management_system/navigation/widgets/net_pay_card.dart';
 
 class HomeScreen extends StatefulWidget {
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -57,9 +60,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
   
+    // GlobalKey to control the Scaffold for opening the drawer
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, 
       appBar: AppBar(
         title: const Text('Home'),
         backgroundColor: Colors.white,
@@ -67,12 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AppDrawer(),
-              ),
-            );
+            // Opening the drawer using the GlobalKey
+            _scaffoldKey.currentState!.openDrawer();
           },
         ),
         actions: [
@@ -81,6 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {},
           )
         ],
+      ),
+      drawer: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.75,
       ),
       body: SingleChildScrollView( 
         child: Padding(
@@ -112,21 +118,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: 'Dividends',
                     imagePath: 'assets/icons/dividends.png',
                     onPressed: () {
-                      // Add your dividends logic here
+                                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DividendsScreen(),
+                      ),
+                    );
                     },
                   ),
                   CustomIconButton(
                     label: 'Welfare',
                     imagePath: 'assets/icons/welfare.png',
                     onPressed: () {
-                      // Add your welfare logic here
+                                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WelfareScreen(),
+                      ),
+                    );
                     },
                   ),
                   CustomIconButton(
                     label: 'Penalty',
                     imagePath: 'assets/icons/penalty.png',
                     onPressed: () {
-                      // Add your penalty logic here
+                                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PenaltyScreen(),
+                      ),
+                    );
                     },
                   ),
                 ],

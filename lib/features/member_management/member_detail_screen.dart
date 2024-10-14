@@ -1,7 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:loan_management_system/features/member_management/model/member_model.dart';
 import 'package:loan_management_system/features/transactions/add_account_screen.dart';
 import 'package:loan_management_system/features/transactions/add_penalty_screen.dart';
 import 'package:loan_management_system/features/transactions/add_shares_screen.dart';

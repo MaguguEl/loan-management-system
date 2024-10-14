@@ -121,7 +121,7 @@ class _DividendsScreenState extends State<DividendsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalDividends)}', // Display total dividends
+                              'K${(member.totalDividends)}', 
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,

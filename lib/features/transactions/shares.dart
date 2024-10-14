@@ -137,21 +137,6 @@ class _SharesScreenState extends State<SharesScreen> {
                         ),
                       ],
                     ),
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => MemberDetailsScreen(
-                    //         memberId: member.id,
-                    //         memberName: member.name,
-                    //         memberPhone: member.phone,
-                    //         memberEmail: member.email ?? 'No email',
-                    //         memberWard: member.ward,
-                    //         noteDescription: member.noteDescription ?? 'No description',
-                    //       ),
-                    //     ),
-                    //   );
-                    // },
                     onLongPress: () => _showDeleteConfirmationDialog(member),
                   ),
                 );
@@ -161,13 +146,6 @@ class _SharesScreenState extends State<SharesScreen> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // Handle add shares action
-      //   },
-      //   backgroundColor: Colors.blue,
-      //   child: Icon(Icons.add, color: Colors.white),
-      // ),
     );
   }
 }

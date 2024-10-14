@@ -50,7 +50,6 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
             ),
             TextButton(
               onPressed: () {
-                // Implement delete logic
                 Navigator.of(context).pop();
               },
               child: Text('Delete'),
@@ -121,7 +120,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalPenalties)}', // Display total penalties
+                              'K${(member.totalPenalties)}', 
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -138,21 +137,6 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                         ),
                       ],
                     ),
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => MemberDetailsScreen(
-                    //         memberId: member.id,
-                    //         memberName: member.name,
-                    //         memberPhone: member.phone,
-                    //         memberEmail: member.email ?? 'No email',
-                    //         memberWard: member.ward,
-                    //         noteDescription: member.noteDescription ?? 'No description',
-                    //       ),
-                    //     ),
-                    //   );
-                    // },
                     onLongPress: () => _showDeleteConfirmationDialog(member),
                   ),
                 );
