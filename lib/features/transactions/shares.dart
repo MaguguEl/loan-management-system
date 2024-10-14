@@ -66,6 +66,7 @@ class _SharesScreenState extends State<SharesScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -100,8 +101,10 @@ class _SharesScreenState extends State<SharesScreen> {
               itemCount: members.length,
               itemBuilder: (context, index) {
                 final member = members[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.zero,
+                  margin: EdgeInsets.zero,
                   child: ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                     leading: CircleAvatar(

@@ -66,6 +66,7 @@ class _WelfareScreenState extends State<WelfareScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

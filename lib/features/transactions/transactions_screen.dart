@@ -7,6 +7,8 @@ class TransactionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         title: const Text('Transactions'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

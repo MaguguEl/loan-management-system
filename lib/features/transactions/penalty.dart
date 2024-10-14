@@ -65,6 +65,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -73,7 +74,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
           },
         ),
         title: Text(
-          'Penalties',
+          'Penalty',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -145,13 +146,6 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handle add penalty action
-        },
-        backgroundColor: Colors.blue,
-        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
