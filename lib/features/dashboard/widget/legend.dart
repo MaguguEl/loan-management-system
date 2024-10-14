@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:loan_management_system/features/dashboard/data/member_data.dart';
+import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
 class LegendDisplay extends StatelessWidget {
-  final List<MemberData> memberData;
+  final List<Member> members; 
 
-  const LegendDisplay({super.key, required this.memberData});
+  const LegendDisplay({Key? key, required this.members}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: memberData.map((datum) {
+      children: members.map((member) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               width: 16,
               height: 16,
-              color: datum.color,
+              color: member.color, // Assuming Member has a color property
             ),
             const SizedBox(width: 8),
-            Text(datum.name, style: const TextStyle(fontSize: 14)), 
+            Text(member.name, style: const TextStyle(fontSize: 14)), 
           ],
         );
       }).toList(),
