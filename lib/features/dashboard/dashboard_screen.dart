@@ -14,7 +14,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  List<MemberData> memberData = [];
+  List<Member> members = [];
   double totalPaid = 0.0;
   double totalTaken = 0.0;
   final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
@@ -25,54 +25,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     fetchMemberData();
   }
 
-void fetchMemberData() {
-  _databaseReference.child('members').onValue.listen((DatabaseEvent event) {
-    final data = event.snapshot.value as Map<dynamic, dynamic>?;
+  void fetchMemberData() {
+    _databaseReference.child('members').onValue.listen((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
 
-    if (data != null) {
-      List<MemberData> tempMemberData = [];
-      double tempTotalPaid = 0.0;
-      double tempTotalTaken = 0.0;
+      if (data != null) {
+        List<Member> tempMembers = [];
+        double tempTotalPaid = 0.0;
+        double tempTotalTaken = 0.0;
 
-      data.forEach((key, value) {
-        Member member = Member.fromMap(value, key);
+        data.forEach((key, value) {
+          Member member = Member.fromMap(value, key);
 
-        if (member.totalShares > 0) {
-          tempMemberData.add(
-            MemberData(
-              name: member.name,
-              value: member.totalShares,
-              color: member.color,
-            ),
-          );
-        }
+          // Add member only if they have shares
+          if (member.totalShares > 0) {
+            tempMembers.add(member);
+          }
 
-        // Accumulate totalPaid and totalTaken for all members
-        tempTotalPaid += member.totalPaid;
-        tempTotalTaken += member.totalTaken;
-      });
+          // Accumulate totalPaid and totalTaken for all members
+          tempTotalPaid += member.totalPaid;
+          tempTotalTaken += member.totalTaken;
+        });
 
-      setState(() {
-        memberData = tempMemberData;
-        totalPaid = tempTotalPaid;
-        totalTaken = tempTotalTaken;
-      });
-    } else {
-      print('No data found.');
-    }
-  });
-}
+        setState(() {
+          members = tempMembers;
+          totalPaid = tempTotalPaid;
+          totalTaken = tempTotalTaken;
+        });
+      } else {
+        print('No data found.');
+      }
+    });
+  }
 
   double calculatePercentage(double value, double total) {
-    if (total == 0) {
-      return 0.0;
-    }
-    return (value / total) * 100;
+    return total == 0 ? 0.0 : (value / total) * 100;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Calculate total (totalPaid + totalTaken) for percentage conversion
     double totalAmount = totalPaid + totalTaken;
     double paidPercentage = calculatePercentage(totalPaid, totalAmount);
     double takenPercentage = calculatePercentage(totalTaken, totalAmount);
@@ -96,27 +87,26 @@ void fetchMemberData() {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                  _buildFinancialCard(
-                    'Total Paid', 
-                    '${paidPercentage.toStringAsFixed(2)}%', 
-                    Icons.arrow_drop_up, 
-                    Colors.green,
-                  ),
-                  const SizedBox(width: 16),
-                  _buildFinancialCard(
-                    'Total Taken', 
-                    '${takenPercentage.toStringAsFixed(2)}%', 
-                    Icons.arrow_drop_down, 
-                    Colors.red,
-                  ),
-                ],
+              children: [
+                _buildFinancialCard(
+                  'Total Paid',
+                  '${paidPercentage.toStringAsFixed(2)}%',
+                  Icons.arrow_drop_up,
+                  Colors.green,
+                ),
+                const SizedBox(width: 16),
+                _buildFinancialCard(
+                  'Total Taken',
+                  '${takenPercentage.toStringAsFixed(2)}%',
+                  Icons.arrow_drop_down,
+                  Colors.red,
+                ),
+              ],
             ),
-           
             const SizedBox(height: 20),
             const Text('Analytics', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Expanded(
-              child: ChartsPage(memberData: memberData), // Pass memberData to ChartsPage
+              child: ChartsPage(members: members), // Pass members to ChartsPage
             ),
           ],
         ),
@@ -154,34 +144,41 @@ void fetchMemberData() {
 }
 
 class ChartsPage extends StatelessWidget {
-  final List<MemberData> memberData;
+  final List<Member> members;
 
-  const ChartsPage({super.key, required this.memberData});
+  const ChartsPage({super.key, required this.members});
 
   @override
   Widget build(BuildContext context) {
-    if (memberData.isEmpty) {
+    if (members.isEmpty) {
       return const Center(child: Text('No member data available.'));
     }
+    List<MemberData> memberData = members.map((member) {
+      return MemberData(
+        name: member.name,
+        value: member.totalShares,
+        color: member.color,
+      );
+    }).toList();
 
     return SingleChildScrollView(
       child: Column(
         children: [
-          // const SizedBox(height: 20),
-          // const Text('Bar Chart for Shares and Dividends', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-          // const SizedBox(height: 50),
-          // Container(
-          //   height: 400,
-          //   child: const BarChartWidget(),
-          // ),
+          const SizedBox(height: 20),
+          const Text('Bar Charts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 20),
+          Container(
+            height: 400,
+            child: BarChartWidget(members: members),
+          ),
           const SizedBox(height: 50),
-          const Text('Pie Chart Member Data', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          const Text('Pie Charts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
           Container(
             height: 300,
-            child: PieChartWidget(memberData: memberData), 
+            child: PieChartWidget(members: members), 
           ),
           const SizedBox(height: 10),
-          LegendDisplay(memberData: memberData),
+          LegendDisplay(members: members),
           const SizedBox(height: 50),
         ],
       ),
