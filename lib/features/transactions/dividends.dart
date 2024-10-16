@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
 class DividendsScreen extends StatefulWidget {
@@ -102,11 +103,10 @@ class _DividendsScreenState extends State<DividendsScreen> {
               itemBuilder: (context, index) {
                 final member = members[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
-                      //backgroundColor: getRandomColor(),
                       child: Text(
                         member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -122,14 +122,14 @@ class _DividendsScreenState extends State<DividendsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalDividends)}', 
+                              'K${(member.totalDividends)}',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              'Dividends', 
+                              'Dividends',
                               style: const TextStyle(
                                 fontSize: 12,
                               ),
@@ -138,6 +138,17 @@ class _DividendsScreenState extends State<DividendsScreen> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MemberDetailsScreen(
+                            member: member,
+                            memberId: member.id,
+                          ),
+                        ),
+                      );
+                    },
                     onLongPress: () => _showDeleteConfirmationDialog(member),
                   ),
                 );

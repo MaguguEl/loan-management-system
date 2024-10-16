@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
 class WelfareScreen extends StatefulWidget {
@@ -75,7 +76,7 @@ class _WelfareScreenState extends State<WelfareScreen> {
           },
         ),
         title: Text(
-          'Welfare Contributions',
+          'Welfare',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -102,11 +103,10 @@ class _WelfareScreenState extends State<WelfareScreen> {
               itemBuilder: (context, index) {
                 final member = members[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add padding
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0), // Add padding
                     leading: CircleAvatar(
-                      //backgroundColor: getRandomColor(),
                       child: Text(
                         member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -122,14 +122,14 @@ class _WelfareScreenState extends State<WelfareScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalWelfares)}', 
+                              'K${(member.totalWelfares)}',
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              'Welfare', 
+                              'Welfare',
                               style: const TextStyle(
                                 fontSize: 12,
                               ),
@@ -138,6 +138,17 @@ class _WelfareScreenState extends State<WelfareScreen> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MemberDetailsScreen(
+                            member: member,
+                            memberId: member.id,
+                          ),
+                        ),
+                      );
+                    },
                     onLongPress: () => _showDeleteConfirmationDialog(member),
                   ),
                 );

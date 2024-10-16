@@ -41,9 +41,9 @@ class _AddMemberFormState extends State<AddMemberForm> {
         id: '',
         name: nameController.text,
         phone: phoneController.text,
-        email: emailController.text.isEmpty ? null : emailController.text, // Set to null if empty
+        email: emailController.text.isEmpty ? null : emailController.text, 
         ward: wardController.text,
-        noteDescription: noteController.text.isEmpty ? null : noteController.text, // Set to null if empty
+        noteDescription: noteController.text.isEmpty ? null : noteController.text, 
         color: randomColor,
       );
 
@@ -62,47 +62,53 @@ class _AddMemberFormState extends State<AddMemberForm> {
     }
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Create a new member',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              _buildTextField('Name', nameController),
-              _buildTextField('Phone', phoneController, keyboardType: TextInputType.number,),
-              _buildTextField('Email (Optional)', emailController, isOptional: true),
-              _buildTextField('Ward', wardController),
-              _buildTextField('Notes (Optional)', noteController, maxLines: 3, isOptional: true),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveMember,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Save Member',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded( // Use Expanded to take up remaining space
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Create a new member',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField('Name', nameController),
+                    _buildTextField('Phone', phoneController, keyboardType: TextInputType.number),
+                    _buildTextField('Email (Optional)', emailController, isOptional: true),
+                    _buildTextField('Ward', wardController),
+                    _buildTextField('Notes (Optional)', noteController, maxLines: 3, isOptional: true),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          ElevatedButton(
+            onPressed: _saveMember,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              'Save Member',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

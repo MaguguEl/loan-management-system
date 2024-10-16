@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
-
 class PenaltyScreen extends StatefulWidget {
   @override
   _PenaltyScreenState createState() => _PenaltyScreenState();
@@ -51,6 +51,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                // Implement delete logic here
               },
               child: Text('Delete'),
             ),
@@ -101,11 +102,10 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
               itemBuilder: (context, index) {
                 final member = members[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add padding
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0), // Add padding
                     leading: CircleAvatar(
-                      //backgroundColor: getRandomColor(),
                       child: Text(
                         member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -121,7 +121,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalPenalties)}', 
+                              'K${(member.totalPenalties)}',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -129,7 +129,7 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                               ),
                             ),
                             Text(
-                              'Penalty', 
+                              'Penalty',
                               style: const TextStyle(
                                 fontSize: 12,
                               ),
@@ -138,6 +138,17 @@ class _PenaltyScreenState extends State<PenaltyScreen> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MemberDetailsScreen(
+                            member: member,
+                            memberId: member.id,
+                          ),
+                        ),
+                      );
+                    },
                     onLongPress: () => _showDeleteConfirmationDialog(member),
                   ),
                 );

@@ -23,20 +23,35 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
     super.dispose();
   }
 
-  // Method to select the date
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: _selectedDate ?? DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2101),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          primaryColor: Colors.blue, 
+          colorScheme: ColorScheme.light(primary: Colors.blue), 
+          buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+          dialogTheme: DialogTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+        child: child!,
+      );
+    },
+  );
+
+  if (picked != null && picked != _selectedDate) {
+    setState(() {
+      _selectedDate = picked;
+    });
   }
+}
 
   // Method to calculate interest based on the amount
   double _calculateInterest(double amount) {
@@ -98,105 +113,119 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Transaction Type Dropdown
-              DropdownButtonFormField<String>(
-                dropdownColor: Colors.white,
-                focusColor: Colors.white,
-                value: _selectedTransactionType,
-                hint: const Text('Select Transaction Type'),
-                items: [
-                  DropdownMenuItem(value: 'Loan Taken', child: Text('Loan Taken')),
-                  DropdownMenuItem(value: 'Loan Paid', child: Text('Loan Paid')),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedTransactionType = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a transaction type';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blueAccent, width: 2.0), // Focused border color
+                        ),
+                      ),
+                      dropdownColor: Colors.white,
+                      focusColor: Colors.white,
+                      value: _selectedTransactionType,
+                      hint: const Text('Select Transaction Type'),
+                      items: [
+                        DropdownMenuItem(value: 'Loan Taken', child: Text('Loan Taken')),
+                        DropdownMenuItem(value: 'Loan Paid', child: Text('Loan Paid')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedTransactionType = value;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please select a transaction type';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-              // Amount Input Field
-              TextFormField(
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                cursorColor: Colors.grey,
-                decoration: InputDecoration(
-                  labelText: 'Amount',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  floatingLabelStyle: TextStyle(color: Colors.blueAccent),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    borderSide: BorderSide(color: Colors.blueAccent),
-                  ),
-                  filled: true,
-                  fillColor: Colors.transparent,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an amount';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
+                    // Amount Input Field
+                    TextFormField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Colors.grey,
+                      decoration: InputDecoration(
+                        labelText: 'Amount',
+                        labelStyle: TextStyle(color: Colors.grey),
+                        floatingLabelStyle: TextStyle(color: Colors.blueAccent),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.blueAccent),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an amount';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
 
-              TextButton(
-                onPressed: () => _selectDate(context),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  side: const BorderSide(color: Colors.grey),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  backgroundColor: Colors.white,
-                ),
-                child: Text(
-                  _selectedDate != null
-                      ? '${_selectedDate!.toLocal()}'.split(' ')[0]
-                      : 'Select Date',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Submit Button
-              ElevatedButton(
-                onPressed: _addTransaction,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Add Transaction',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
+                    // Date Picker Button
+                    TextButton(
+                      onPressed: () => _selectDate(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        side: const BorderSide(color: Colors.grey),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        backgroundColor: Colors.white,
+                      ),
+                      child: Text(
+                        _selectedDate != null
+                            ? '${_selectedDate!.toLocal()}'.split(' ')[0]
+                            : 'Select Date',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          
+          // Submit Button at the bottom
+          ElevatedButton(
+            onPressed: _addTransaction,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              'Add Transaction',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

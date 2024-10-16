@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
 class SharesScreen extends StatefulWidget {
@@ -101,14 +102,11 @@ class _SharesScreenState extends State<SharesScreen> {
               itemCount: members.length,
               itemBuilder: (context, index) {
                 final member = members[index];
-                return Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.zero,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add padding
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0), // Add padding
                     leading: CircleAvatar(
-                     // backgroundColor: getRandomColor(),
                       child: Text(
                         member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -124,14 +122,14 @@ class _SharesScreenState extends State<SharesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalShares)}', 
+                              'K${(member.totalShares)}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              'Shares', 
+                              'Shares',
                               style: const TextStyle(
                                 fontSize: 12,
                               ),
@@ -140,6 +138,17 @@ class _SharesScreenState extends State<SharesScreen> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MemberDetailsScreen(
+                            member: member,
+                            memberId: member.id,
+                          ),
+                        ),
+                      );
+                    },
                     onLongPress: () => _showDeleteConfirmationDialog(member),
                   ),
                 );

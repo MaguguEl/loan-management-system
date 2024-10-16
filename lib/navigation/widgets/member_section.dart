@@ -36,7 +36,7 @@ class _MemberSectionState extends State<MemberSection> {
       }
 
       setState(() {
-        isLoading = false; // Set loading to false once the data is fetched
+        isLoading = false; 
       });
     });
   }
@@ -246,12 +246,7 @@ class MemberItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => MemberDetailsScreen(
-                memberId: member.id, 
-                memberName: member.name,
-                memberPhone: member.phone,
-                memberEmail: member.email ?? 'No email',
-                memberWard: member.ward,
-                noteDescription: member.noteDescription ?? 'No description',
+                member: member, memberId: member.id,
               ),
             ),
           );

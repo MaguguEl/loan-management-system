@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,23 +9,16 @@ import 'package:loan_management_system/features/transactions/add_shares_screen.d
 import 'package:loan_management_system/features/transactions/add_transaction_screen.dart';
 import 'package:loan_management_system/features/transactions/add_welfare_screen.dart';
 import 'package:loan_management_system/features/transactions/model/loan_model.dart';
+import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
 class MemberDetailsScreen extends StatefulWidget {
   final String memberId;
-  final String memberName;
-  final String memberPhone;
-  final String memberEmail;
-  final String memberWard;
-  final String noteDescription;
+  final Member member; 
 
   const MemberDetailsScreen({
     Key? key,
     required this.memberId,
-    required this.memberName,
-    required this.memberPhone,
-    required this.memberEmail,
-    required this.memberWard,
-    required this.noteDescription,
+    required this.member,
   }) : super(key: key);
 
   @override
@@ -194,9 +189,18 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
     });
   }
 
+    Color getRandomColor() {
+    Random random = Random();
+    return Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
+  }
     // Function to format numbers
   String _formatNumber(double number) {
-    final formatter = NumberFormat('#,##0.00'); // Customize the format as needed
+    final formatter = NumberFormat('#,##0.00'); 
     return formatter.format(number);
   }
 
@@ -224,14 +228,17 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Member Information Section
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center, 
+                crossAxisAlignment: CrossAxisAlignment.center, 
                 children: [
                   CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.blue.shade700,
-                    child: const Icon(Icons.person, color: Colors.white, size: 40),
+                    radius: 40.0, 
+                    backgroundColor: getRandomColor(),
+                    child: Text(
+                      widget.member.name.isNotEmpty ? widget.member.name[0].toUpperCase() : '',
+                      style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -239,37 +246,63 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.memberName,
+                          widget.member.name,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          widget.memberWard,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(Icons.phone, size: 16, color: Colors.grey),
-                            const SizedBox(width: 4),
-                            Text(widget.memberPhone),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            const Icon(Icons.email, size: 16, color: Colors.grey),
-                            const SizedBox(width: 4),
-                            Text(widget.memberEmail),
-                          ],
+                          widget.member.ward,
+                          style: const TextStyle(color: Colors.grey, fontSize: 16),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.more_horiz),
                 ],
+              ),
+              const SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Contact info',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Icon(Icons.phone, size: 16, color: Colors.grey),
+                          SizedBox(width: 8),
+                          Text(widget.member.phone), 
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.email, size: 16, color: Colors.grey),
+                          SizedBox(width: 8),
+                          Text(widget.member.email ?? "No email provided"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               _buildLoanBalanceCard(),
@@ -280,7 +313,9 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: ListView(
+                child: Container(
+                  height: 500,
+                  child: ListView(
                   children: [
                     _buildAccountDetailTile(
                       'Shares',
@@ -307,7 +342,10 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                     ),
                   ],
                 ),
+              
+                ),
               ),
+            
             ],
           ),
         ),
