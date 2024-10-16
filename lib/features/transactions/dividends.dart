@@ -11,6 +11,7 @@ class DividendsScreen extends StatefulWidget {
 
 class _DividendsScreenState extends State<DividendsScreen> {
   final List<Member> members = [];
+  String searchQuery = '';
   final DatabaseReference _membersRef = FirebaseDatabase.instance.ref('members');
 
   @override
@@ -64,6 +65,12 @@ class _DividendsScreenState extends State<DividendsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredMembers = members.where((member) {
+      return 
+      member.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+      member.ward.contains(searchQuery);
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -95,13 +102,18 @@ class _DividendsScreenState extends State<DividendsScreen> {
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
             ),
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: members.length,
+              itemCount: filteredMembers.length,
               itemBuilder: (context, index) {
-                final member = members[index];
+                  final member = filteredMembers[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: ListTile(

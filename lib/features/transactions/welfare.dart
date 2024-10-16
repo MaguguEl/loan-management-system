@@ -11,6 +11,7 @@ class WelfareScreen extends StatefulWidget {
 
 class _WelfareScreenState extends State<WelfareScreen> {
   final List<Member> members = [];
+  String searchQuery = '';
   final DatabaseReference _membersRef = FirebaseDatabase.instance.ref('members');
 
   @override
@@ -64,6 +65,10 @@ class _WelfareScreenState extends State<WelfareScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredMembers = members.where((member) {
+      return member.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+        member.ward.toLowerCase().contains(searchQuery);
+    }).toList();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -95,17 +100,22 @@ class _WelfareScreenState extends State<WelfareScreen> {
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
             ),
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: members.length,
+              itemCount: filteredMembers.length,
               itemBuilder: (context, index) {
-                final member = members[index];
+                  final member = filteredMembers[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add padding
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), 
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0), // Add padding
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0), 
                     leading: CircleAvatar(
                       child: Text(
                         member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
