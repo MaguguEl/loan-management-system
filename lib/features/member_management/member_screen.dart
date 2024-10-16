@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:loan_management_system/features/member_management/edit_member_screen.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
@@ -99,10 +100,9 @@ class _MembersScreenState extends State<MembersScreen> {
     setState(() {});
   }
 
-  
-    // Function to format numbers
+  // Function to format numbers
   String _formatNumber(double number) {
-    final formatter = NumberFormat('#,##0.00'); // Customize the format as needed
+    final formatter = NumberFormat('#,##0.00'); 
     return formatter.format(number);
   }
 
@@ -204,16 +204,15 @@ class _MembersScreenState extends State<MembersScreen> {
                         margin: EdgeInsets.zero,
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                          leading: CircleAvatar(
-                            backgroundColor: getRandomColor(),
-                            child: Text(
-                              member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                            ),
+                        leading: CircleAvatar(
+                          backgroundColor: getRandomColor(),
+                          child: Text(
+                            member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
+                        ),
                           title: Text(member.name),
                           subtitle: Text('${member.ward}'),
-                          // Replace the relevant part of the trailing widget in the ListTile
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -222,7 +221,7 @@ class _MembersScreenState extends State<MembersScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    '+ K${_formatNumber(totalLoanPaid)}', // Dynamically display total paid
+                                    '+ K${_formatNumber(totalLoanPaid)}', 
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -248,7 +247,12 @@ class _MembersScreenState extends State<MembersScreen> {
                                 child: PopupMenuButton<String>(
                                   onSelected: (String value) {
                                     if (value == 'edit') {
-                                      // Navigate to edit member screen
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditMemberScreen(member: member), 
+                                        ),
+                                      );
                                     } else if (value == 'delete') {
                                       _showDeleteConfirmationDialog(member);
                                     }
@@ -276,12 +280,7 @@ class _MembersScreenState extends State<MembersScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MemberDetailsScreen(
-                                  memberId: member.id,
-                                  memberName: member.name,
-                                  memberPhone: member.phone,
-                                  memberEmail: member.email ?? 'No email',
-                                  memberWard: member.ward,
-                                  noteDescription: member.noteDescription ?? 'No description',
+                                  member: member, memberId: member.id, 
                                 ),
                               ),
                             );
