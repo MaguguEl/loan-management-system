@@ -77,8 +77,9 @@ class _MembersScreenState extends State<MembersScreen> {
     await dbRef.remove();
   }
 
-  Color getRandomColor() {
-    Random random = Random();
+  Color getColorForMember(String memberId) {
+    int hash = memberId.hashCode;
+    Random random = Random(hash);
     return Color.fromARGB(
       255,
       random.nextInt(256),
@@ -86,6 +87,7 @@ class _MembersScreenState extends State<MembersScreen> {
       random.nextInt(256),
     );
   }
+
 
   void _sortMembers() {
     if (sortBy == 'name') {
@@ -205,7 +207,7 @@ class _MembersScreenState extends State<MembersScreen> {
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(horizontal: 0),
                         leading: CircleAvatar(
-                          backgroundColor: getRandomColor(),
+                          backgroundColor: getColorForMember(member.id),
                           child: Text(
                             member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

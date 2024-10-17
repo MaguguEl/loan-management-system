@@ -189,15 +189,6 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
     });
   }
 
-    Color getRandomColor() {
-    Random random = Random();
-    return Color.fromARGB(
-      255,
-      random.nextInt(256),
-      random.nextInt(256),
-      random.nextInt(256),
-    );
-  }
     // Function to format numbers
   String _formatNumber(double number) {
     final formatter = NumberFormat('#,##0.00'); 
@@ -234,7 +225,7 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
                 children: [
                   CircleAvatar(
                     radius: 40.0, 
-                    backgroundColor: getRandomColor(),
+                    backgroundColor: (widget.member.color),
                     child: Text(
                       widget.member.name.isNotEmpty ? widget.member.name[0].toUpperCase() : '',
                       style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),

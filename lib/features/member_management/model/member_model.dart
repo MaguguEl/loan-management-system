@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/transactions/model/dividend_model.dart';
 import 'package:loan_management_system/features/transactions/model/loan_model.dart';
@@ -12,20 +13,20 @@ class Member {
   String phone;
   String? email;
   String ward;
-  String? noteDescription;
   Color color;
-  List<Loan> loans;  // List to store loans
-  double totalPaid;   // Total amount paid
-  double totalTaken;  // Total amount taken
-  double loanBalance; // Current loan balance
-  double totalInterest; // Field to store total interest
+  String? noteDescription;
+  List<Loan> loans;
+  double totalPaid;
+  double totalTaken;
+  double loanBalance;
+  double totalInterest;
   List<Share> shares;
   double totalShares;
-  List<Dividend> dividends;  // List to store dividends
-  double totalDividends;  // Total amount of dividends received
+  List<Dividend> dividends;
+  double totalDividends;
   List<Welfare> welfares;
   double totalWelfares;
-  List<Penalty> penalties; // Declare penalties list
+  List<Penalty> penalties;
   double totalPenalties;
 
   Member({
@@ -35,12 +36,11 @@ class Member {
     this.email,
     required this.ward,
     this.noteDescription,
-    required this.color,
-    this.loans = const [],  // Initialize the loans list
-    this.shares= const [],
+    this.loans = const [],
+    this.shares = const [],
     this.dividends = const [],
     this.welfares = const [],
-    this.penalties = const [], // Initialize penalties list
+    this.penalties = const [], required Color color,
   })  : totalPaid = loans.fold(0.0, (sum, loan) => sum + loan.loanPaid),
         totalTaken = loans.fold(0.0, (sum, loan) => sum + loan.loanTaken),
         totalInterest = loans.fold(0.0, (sum, loan) => sum + loan.interest),
@@ -48,9 +48,20 @@ class Member {
         totalDividends = dividends.fold(0.0, (sum, dividend) => sum + dividend.amount),
         totalWelfares = welfares.fold(0.0, (sum, welfare) => sum + welfare.amount),
         totalPenalties = penalties.fold(0.0, (sum, penalty) => sum + penalty.amount),
-        loanBalance = 0; // Initialize loanBalance to 0 (will be calculated in the constructor body)
+        loanBalance = 0,
+        color = getColorForMember(id);
 
-  // Constructor body to calculate loan balance
+  static Color getColorForMember(String memberId) {
+    int hash = memberId.hashCode;
+    Random random = Random(hash);
+    return Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
+  }
+
   Member._init({
     required this.id,
     required this.name,
@@ -58,7 +69,6 @@ class Member {
     this.email,
     required this.ward,
     this.noteDescription,
-    required this.color,
     required this.loans,
     required this.totalPaid,
     required this.totalTaken,
@@ -71,44 +81,41 @@ class Member {
     required this.totalWelfares,
     required this.penalties,
     required this.totalPenalties,
-  }) : loanBalance = totalTaken - totalPaid + loans.fold(0.0, (sum, loan) => sum + loan.interest);
+  }) : loanBalance = totalTaken - totalPaid + loans.fold(0.0, (sum, loan) => sum + loan.interest),
+  color = getColorForMember(id);
 
   factory Member.fromMap(Map<dynamic, dynamic> map, String id) {
     List<Loan> loans = [];
-    List<Share>  shares = [];
+    List<Share> shares = [];
     List<Dividend> dividends = [];
     List<Welfare> welfares = [];
     List<Penalty> penalties = [];
 
-    // Populate the loans list if available
+    // Populate the lists 
     if (map['loans'] != null) {
       for (var loanId in map['loans'].keys) {
         loans.add(Loan.fromMap(map['loans'][loanId], loanId));
       }
     }
 
-    // Populate the dividends list if available
     if (map['shares'] != null) {
       for (var shareId in map['shares'].keys) {
         shares.add(Share.fromMap(map['shares'][shareId], shareId));
       }
     }
 
-    // Populate the dividends list if available
     if (map['dividends'] != null) {
       for (var dividendId in map['dividends'].keys) {
         dividends.add(Dividend.fromMap(map['dividends'][dividendId], dividendId));
       }
     }
 
-    // Populate the welfare list if available
     if (map['welfares'] != null) {
       for (var welfareId in map['welfares'].keys) {
         welfares.add(Welfare.fromMap(map['welfares'][welfareId], welfareId));
       }
     }
 
-    // Populate the penalty list if available
     if (map['penalties'] != null) {
       for (var penaltyId in map['penalties'].keys) {
         penalties.add(Penalty.fromMap(map['penalties'][penaltyId], penaltyId));
@@ -122,10 +129,9 @@ class Member {
       email: map['email'],
       ward: map['ward'] ?? '',
       noteDescription: map['noteDescription'],
-      color: Color(map['color'] ?? Colors.blue.value),
-      loans: loans,  // Assign the loans list
-      shares: shares,  
-      dividends: dividends,  
+      loans: loans,
+      shares: shares,
+      dividends: dividends,
       welfares: welfares,
       penalties: penalties,
       totalPaid: loans.fold(0.0, (sum, loan) => sum + loan.loanPaid),
@@ -146,7 +152,7 @@ class Member {
       'email': email,
       'ward': ward,
       'noteDescription': noteDescription,
-      'color': color.value,
+      'color': getColorForMember(id).value, 
       'loans': {for (var loan in loans) loan.id: loan.toMap()},
       'shares': {for (var share in shares) share.id: share.toMap()},
       'dividends': {for (var dividend in dividends) dividend.id: dividend.toMap()},

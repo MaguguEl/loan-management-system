@@ -106,7 +106,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 20),
             const Text('Analytics', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Expanded(
-              child: ChartsPage(members: members), // Pass members to ChartsPage
+              child: ChartsPage(members: members), 
             ),
           ],
         ),
@@ -165,13 +165,6 @@ class ChartsPage extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 20),
-          const Text('Bar Charts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 20),
-          Container(
-            height: 400,
-            child: BarChartWidget(members: members),
-          ),
-          const SizedBox(height: 50),
           const Text('Pie Charts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
           Container(
             height: 300,
@@ -179,6 +172,13 @@ class ChartsPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           LegendDisplay(members: members),
+          const SizedBox(height: 50),
+          const Text('Bar Charts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 20),
+          Container(
+            height: 400,
+            child: BarChartWidget(members: members),
+          ),
           const SizedBox(height: 50),
         ],
       ),

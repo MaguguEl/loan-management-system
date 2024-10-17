@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
@@ -36,6 +37,17 @@ class _DividendsScreenState extends State<DividendsScreen> {
         });
       }
     });
+  }
+
+   Color getColorForMember(String memberId) {
+    int hash = memberId.hashCode;
+    Random random = Random(hash);
+    return Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
   }
 
   void _showDeleteConfirmationDialog(Member member) {
@@ -119,6 +131,7 @@ class _DividendsScreenState extends State<DividendsScreen> {
                   child: ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
+                      backgroundColor: getColorForMember(member.id),
                       child: Text(
                         member.name.isNotEmpty ? member.name[0].toUpperCase() : '',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
