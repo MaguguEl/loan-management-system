@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
@@ -48,6 +49,11 @@ class _SharesScreenState extends State<SharesScreen> {
       random.nextInt(256),
     );
   }
+   String _formatNumber(double number) {
+    final formatter = NumberFormat('#,##0.00'); 
+    return formatter.format(number);
+  }
+
 
   void _showDeleteConfirmationDialog(Member member) {
     showDialog(
@@ -126,9 +132,9 @@ class _SharesScreenState extends State<SharesScreen> {
               itemBuilder: (context, index) {
                   final member = filteredMembers[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0), 
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0), 
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                     leading: CircleAvatar(
                       backgroundColor: getColorForMember(member.id),
                       child: Text(
@@ -146,7 +152,7 @@ class _SharesScreenState extends State<SharesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalShares)}',
+                              'K${_formatNumber(member.totalShares)}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import 'package:loan_management_system/features/member_management/member_detail_screen.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
 
@@ -49,6 +50,12 @@ class _DividendsScreenState extends State<DividendsScreen> {
       random.nextInt(256),
     );
   }
+
+   String _formatNumber(double number) {
+    final formatter = NumberFormat('#,##0.00'); 
+    return formatter.format(number);
+  }
+
 
   void _showDeleteConfirmationDialog(Member member) {
     showDialog(
@@ -125,11 +132,11 @@ class _DividendsScreenState extends State<DividendsScreen> {
             child: ListView.separated(
               itemCount: filteredMembers.length,
               itemBuilder: (context, index) {
-                  final member = filteredMembers[index];
+                final member = filteredMembers[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: ListTile(
-                    contentPadding: EdgeInsets.zero,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                     leading: CircleAvatar(
                       backgroundColor: getColorForMember(member.id),
                       child: Text(
@@ -147,7 +154,7 @@ class _DividendsScreenState extends State<DividendsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'K${(member.totalDividends)}',
+                              'K${_formatNumber(member.totalDividends)}',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
