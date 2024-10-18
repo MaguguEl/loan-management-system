@@ -8,19 +8,27 @@ class LegendDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Wrap(
+      spacing: 16, 
+      runSpacing: 8, 
       children: members.map((member) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: 16,
-              height: 16,
-              color: member.color, // Assuming Member has a color property
-            ),
-            const SizedBox(width: 8),
-            Text(member.name, style: const TextStyle(fontSize: 14)), 
-          ],
+        return SizedBox(
+          width: MediaQuery.of(context).size.width / 2 - 24, 
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 16,
+                height: 16,
+                color: member.color,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                member.name,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
         );
       }).toList(),
     );
