@@ -1,7 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/member_management/model/member_model.dart';
-import 'package:loan_management_system/features/reports/widget/tab_header.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -164,6 +163,7 @@ class _ReportScreenState extends State<ReportScreen> {
             SizedBox(height: 10),
             TableHeader(),
             SizedBox(height: 10),
+            
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -243,5 +243,42 @@ class _ReportScreenState extends State<ReportScreen> {
         ],
       );
     }).toList();
+  }
+}
+
+class TableHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'TITHANDIDZANE CLUB',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.filter_list_alt),
+                onPressed: () {
+                  // Add sorting logic
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.sort),
+                onPressed: () {
+                  // Add filtering logic
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
