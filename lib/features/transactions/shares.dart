@@ -39,6 +39,7 @@ class _SharesScreenState extends State<SharesScreen> {
       }
     });
   }
+  
    Color getColorForMember(String memberId) {
     int hash = memberId.hashCode;
     Random random = Random(hash);

@@ -7,7 +7,6 @@ class Welfare {
     required this.amount,
   });
 
-  // Factory method to create a Welfare instance from Firebase data
   factory Welfare.fromMap(Map<dynamic, dynamic> map, String id) {
     return Welfare(
       id: id,
@@ -15,7 +14,6 @@ class Welfare {
     );
   }
 
-  // Converts a Welfare object to a map for Firebase
   Map<String, dynamic> toMap() {
     return {
       'amount': amount,

@@ -29,6 +29,7 @@ class _WelfareScreenState extends State<WelfareScreen> {
       if (data != null) {
         List<Member> loadedMembers = [];
         data.forEach((key, value) {
+          // Ensure you're fetching totalWelfares and other welfare data here
           loadedMembers.add(Member.fromMap(value, key));
         });
 
@@ -40,7 +41,7 @@ class _WelfareScreenState extends State<WelfareScreen> {
     });
   }
 
-   Color getColorForMember(String memberId) {
+  Color getColorForMember(String memberId) {
     int hash = memberId.hashCode;
     Random random = Random(hash);
     return Color.fromARGB(
@@ -51,11 +52,10 @@ class _WelfareScreenState extends State<WelfareScreen> {
     );
   }
 
-   String _formatNumber(double number) {
-    final formatter = NumberFormat('#,##0.00'); 
+  String _formatNumber(double number) {
+    final formatter = NumberFormat('#,##0.00');
     return formatter.format(number);
   }
-
 
   void _showDeleteConfirmationDialog(Member member) {
     showDialog(
@@ -88,6 +88,7 @@ class _WelfareScreenState extends State<WelfareScreen> {
       return member.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
         member.ward.toLowerCase().contains(searchQuery);
     }).toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -130,7 +131,7 @@ class _WelfareScreenState extends State<WelfareScreen> {
             child: ListView.separated(
               itemCount: filteredMembers.length,
               itemBuilder: (context, index) {
-                  final member = filteredMembers[index];
+                final member = filteredMembers[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: ListTile(
@@ -144,27 +145,22 @@ class _WelfareScreenState extends State<WelfareScreen> {
                     ),
                     title: Text(member.name),
                     subtitle: Text('${member.ward}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'K${_formatNumber(member.totalWelfares)}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              'Welfare',
-                              style: const TextStyle(
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          'K${_formatNumber(member.totalWelfares)}', // Display total welfare amount
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Welfare',
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
