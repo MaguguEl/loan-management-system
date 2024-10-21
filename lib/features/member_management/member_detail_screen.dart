@@ -195,154 +195,138 @@ class _MemberDetailsScreenState extends State<MemberDetailsScreen> {
     return formatter.format(number);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+        title: Text('Member Details'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+    body: ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 40.0,
+              backgroundColor: widget.member.color,
+              child: Text(
+                widget.member.name.isNotEmpty ? widget.member.name[0].toUpperCase() : '',
+                style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
               ),
-              title: const Text('Member Details'),
-              pinned: true,
-              backgroundColor: Colors.white,
             ),
-          ];
-        },
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center, 
-                crossAxisAlignment: CrossAxisAlignment.center, 
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 40.0, 
-                    backgroundColor: (widget.member.color),
-                    child: Text(
-                      widget.member.name.isNotEmpty ? widget.member.name[0].toUpperCase() : '',
-                      style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                  Text(
+                    widget.member.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.member.name,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          widget.member.ward,
-                          style: const TextStyle(color: Colors.grey, fontSize: 16),
-                        ),
-                      ],
-                    ),
+                  Text(
+                    widget.member.ward,
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Contact info',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Icon(Icons.phone, size: 16, color: Colors.grey),
-                          SizedBox(width: 8),
-                          Text(widget.member.phone), 
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(Icons.email, size: 16, color: Colors.grey),
-                          SizedBox(width: 8),
-                          Text(widget.member.email ?? "No email provided"),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildLoanBalanceCard(),
-              const SizedBox(height: 16),
-              const Text(
-                'Account',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: Container(
-                  height: 500,
-                  child: ListView(
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Card(
+          elevation: 4,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    _buildAccountDetailTile(
-                      'Shares',
-                      'K${_formatNumber(totalShare)}',
-                      AddSharesScreen(memberId: widget.memberId),
-                    ),
-                    Divider(),
-                    _buildAccountDetailTile(
-                      'Dividend',
-                      'K${_formatNumber(totalDividend)}',
-                      AddAccountScreen(memberId: widget.memberId),
-                    ),
-                    Divider(),
-                    _buildAccountDetailTile(
-                      'Welfare',
-                      'K${_formatNumber(totalWelfare)}',
-                      AddWelfareScreen(memberId: widget.memberId),
-                    ),
-                    Divider(),
-                    _buildAccountDetailTile(
-                      'Penalty',
-                      'K${_formatNumber(totalPenalty)}',
-                      AddPenaltyScreen(memberId: widget.memberId),
-                    ),
+                    Text(
+                      'Contact info',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    )
                   ],
                 ),
-              
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Icon(Icons.phone, size: 16, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text(widget.member.phone),
+                  ],
                 ),
-              ),
-            
-            ],
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.email, size: 16, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text(widget.member.email ?? "No email provided"),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+        const SizedBox(height: 16),
+        _buildLoanBalanceCard(),
+        const SizedBox(height: 16),
+        const Text(
+          'Account',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        _buildAccountDetailTile(
+          'Shares',
+          'K${_formatNumber(totalShare)}',
+          AddSharesScreen(memberId: widget.memberId),
+        ),
+        const Divider(),
+        _buildAccountDetailTile(
+          'Dividend',
+          'K${_formatNumber(totalDividend)}',
+          AddAccountScreen(memberId: widget.memberId),
+        ),
+        const Divider(),
+        _buildAccountDetailTile(
+          'Welfare',
+          'K${_formatNumber(totalWelfare)}',
+          AddWelfareScreen(memberId: widget.memberId),
+        ),
+        const Divider(),
+        _buildAccountDetailTile(
+          'Penalty',
+          'K${_formatNumber(totalPenalty)}',
+          AddPenaltyScreen(memberId: widget.memberId),
+        ),
+        const SizedBox(height: 16),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildLoanBalanceCard() {
     return Card(

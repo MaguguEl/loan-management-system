@@ -168,6 +168,7 @@ class _MembersScreenState extends State<MembersScreen> {
                   TextField(
                     cursorColor: Colors.blue,
                     decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
                       labelText: 'Search Members',
                       labelStyle: const TextStyle(color: Colors.grey),
                       floatingLabelStyle: const TextStyle(color: Colors.blueAccent),
