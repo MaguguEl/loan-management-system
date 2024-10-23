@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:loan_management_system/features/authentications/sign_in_screen.dart';
+import 'package:loan_management_system/features/authentications/sign_up_screen.dart';
 import 'package:loan_management_system/navigation/main_screen.dart';
 
 void main() async {
@@ -24,10 +26,6 @@ void main() async {
     } else {
       await Firebase.initializeApp();
     }
-
-    // Note: No longer needed to enable offline persistence manually
-    // FirebaseDatabase.instance.setPersistenceEnabled(true);
-    
   } catch (e) {
     // Handle any errors during Firebase initialization
     print("Error initializing Firebase: $e");
@@ -46,9 +44,42 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: const Color(0xFFf9f9f9), 
+        scaffoldBackgroundColor: const Color(0xFFf9f9f9),
       ),
-      home: const MainScreen(), 
+      home: MainScreen(), 
+    
     );
   }
 }
+
+
+// LoginScreen(
+      //   onLoginSuccess: () {
+      //     // Navigate to MainScreen on successful login
+      //     Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const MainScreen()),
+      //     );
+      //   },
+      //   onSignUp: () {
+      //     // Navigate to SignUpScreen on sign up
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (context) => SignUpScreen(
+      //           onSignUpSuccess: () {
+      //             // Handle sign-up success (e.g., navigate to main screen)
+      //             Navigator.pushReplacement(
+      //               context,
+      //               MaterialPageRoute(builder: (context) => const MainScreen()),
+      //             );
+      //           },
+      //           onLogin: () {
+      //             // Navigate back to login screen
+      //             Navigator.pop(context);
+      //           },
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // ),

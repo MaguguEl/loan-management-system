@@ -84,7 +84,7 @@ class AppDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => ReportsScreen()),
+                  MaterialPageRoute(builder: (context) => ReportScreen()),
                 );
               },
             ),

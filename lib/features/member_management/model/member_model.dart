@@ -25,7 +25,7 @@ class Member {
   List<Dividend> dividends;
   double totalDividends;
   List<Welfare> welfares;
-  double totalWelfares;
+  final double totalWelfares;
   List<Penalty> penalties;
   double totalPenalties;
 
@@ -76,10 +76,10 @@ class Member {
     required this.shares,
     required this.dividends,
     required this.welfares,
+    required this.penalties,
     required this.totalShares,
     required this.totalDividends,
     required this.totalWelfares,
-    required this.penalties,
     required this.totalPenalties,
   }) : loanBalance = totalTaken - totalPaid + loans.fold(0.0, (sum, loan) => sum + loan.interest),
   color = getColorForMember(id);

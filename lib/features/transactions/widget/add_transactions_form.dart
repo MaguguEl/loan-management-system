@@ -182,11 +182,10 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Date Picker Button
                     TextButton(
                       onPressed: () => _selectDate(context),
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
                         side: const BorderSide(color: Colors.grey),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -197,7 +196,7 @@ class _AddTransactionsFormState extends State<AddTransactionsForm> {
                         _selectedDate != null
                             ? '${_selectedDate!.toLocal()}'.split(' ')[0]
                             : 'Select Date',
-                        style: const TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
                     const SizedBox(height: 16),

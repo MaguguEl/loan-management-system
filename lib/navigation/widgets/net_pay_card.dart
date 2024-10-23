@@ -14,10 +14,19 @@ class TotalNetPayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return 
+    Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Container(
         decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/nebula.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.0), 
+              BlendMode.darken,
+            ),
+          ),
           gradient: const LinearGradient(
             colors: [
               Color.fromARGB(255, 73, 164, 238),
@@ -49,7 +58,7 @@ class TotalNetPayCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            formatNumber(totalNetPay),
+                            'K${formatNumber(totalNetPay.abs())}',
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -83,7 +92,7 @@ class TotalNetPayCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        formatNumber(totalLoansTaken),
+                        'K${formatNumber(totalLoansTaken)}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -104,7 +113,7 @@ class TotalNetPayCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        formatNumber(totalLoansPaid),
+                        'K${formatNumber(totalLoansPaid)}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
