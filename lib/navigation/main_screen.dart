@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loan_management_system/features/dashboard/dashboard_screen.dart';
 import 'package:loan_management_system/features/member_management/member_screen.dart';
 import 'package:loan_management_system/features/reports/reports_screen.dart';
+import 'package:loan_management_system/navigation/admin_profile_screen.dart';
 import 'package:loan_management_system/navigation/posts_screen.dart';
 import 'package:loan_management_system/navigation/home_screen.dart';
 
@@ -19,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     DashboardScreen(),
     ReportScreen(),
-    MembersScreen(),
+    AdminProfileScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -62,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
             _buildIconButton(Icons.home_filled, 'Home', 0),
             _buildIconButton(Icons.dashboard, 'Dashboard', 1),
             _buildIconButton(Icons.table_view, 'Reports', 2),
-            _buildIconButton(Icons.groups, 'Members', 3),
+            _buildIconButton(Icons.person, 'Admin', 3),
           ],
         ),
       ),
