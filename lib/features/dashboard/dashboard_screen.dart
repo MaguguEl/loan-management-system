@@ -79,8 +79,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             title: const Text('Dashboard'),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
-            pinned: true, // Keeps the AppBar visible when scrolling
-            elevation: 0, // Remove shadow when pinned
+            pinned: true, 
+            elevation: 0, 
             actions: [
               IconButton(
                 icon: const Icon(Icons.notifications),

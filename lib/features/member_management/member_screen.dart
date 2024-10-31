@@ -102,7 +102,6 @@ class _MembersScreenState extends State<MembersScreen> {
     setState(() {});
   }
 
-  // Function to format numbers
   String _formatNumber(double number) {
     final formatter = NumberFormat('#,##0.00'); 
     return formatter.format(number);
@@ -195,11 +194,10 @@ class _MembersScreenState extends State<MembersScreen> {
                     itemCount: filteredMembers.length,
                     itemBuilder: (context, index) {
                       final member = filteredMembers[index];
-                      
-                      // Calculate total loan taken and paid
+
                       double totalLoanTaken = member.loans.fold<double>(0, (sum, loan) => sum + loan.loanTaken);
                       double totalLoanPaid = member.loans.fold<double>(0, (sum, loan) => sum + loan.loanPaid);
-                      double loanBalance = totalLoanTaken - totalLoanPaid; // Calculate loan balance
+                      double loanBalance = totalLoanTaken - totalLoanPaid; 
                       
                       return Container(
                         width: double.infinity,

@@ -255,7 +255,7 @@ class TableHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'TITHANDIDZANE CLUB',
+            'TGC Financials',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
