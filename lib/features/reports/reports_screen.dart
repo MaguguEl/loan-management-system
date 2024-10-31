@@ -201,7 +201,15 @@ class _ReportScreenState extends State<ReportScreen> {
                           DataCell(Text(formatNumberWithCommas(_totalInterestOnLoan), style: const TextStyle(fontWeight: FontWeight.bold))),
                           DataCell(Text(formatNumberWithCommas(_totalLoanPlusInterest), style: const TextStyle(fontWeight: FontWeight.bold))),
                           DataCell(Text(formatNumberWithCommas(_totalLoanPaid), style: const TextStyle(fontWeight: FontWeight.bold))),
-                          DataCell(Text(formatNumberWithCommas(_totalNetPay), style: const TextStyle(fontWeight: FontWeight.bold))),
+                          DataCell(
+                            Text(
+                              formatNumberWithCommas(_totalNetPay),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: _totalNetPay >= 0 ? Colors.green : Colors.red, 
+                              ),
+                            ),
+                          ),
                           DataCell(Text(formatNumberWithCommas(_totalWelfare), style: const TextStyle(fontWeight: FontWeight.bold))),
                           DataCell(Text(formatNumberWithCommas(_totalPenalty), style: const TextStyle(fontWeight: FontWeight.bold))),
                         ],
@@ -237,7 +245,15 @@ class _ReportScreenState extends State<ReportScreen> {
           DataCell(Text(formatNumberWithCommas(member.totalInterest))),
           DataCell(Text(formatNumberWithCommas(loanPlusInterest))),
           DataCell(Text(formatNumberWithCommas(member.totalPaid))),
-          DataCell(Text(formatNumberWithCommas(netPay))),
+          DataCell(
+          Text(
+            formatNumberWithCommas(netPay),
+            style: TextStyle(
+              color: netPay < 0 ? Colors.red : Colors.green, 
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
           DataCell(Text(formatNumberWithCommas(member.totalWelfares))),
           DataCell(Text(formatNumberWithCommas(member.totalPenalties))),
         ],
