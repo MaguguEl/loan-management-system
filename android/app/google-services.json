@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "993579334903",
+    "firebase_url": "https://loan-manager-v1-default-rtdb.firebaseio.com",
     "project_id": "loan-manager-v1",
-    "storage_bucket": "loan-manager-v1.appspot.com"
+    "storage_bucket": "loan-manager-v1.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +13,12 @@
           "package_name": "com.example.loan_management_system"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "993579334903-5hrncib9fulp4tsrgjfta1afss969dl2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDiUCQLI_E9XOvM8qm0M-ciA6ZaonPj834"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993579334903-5hrncib9fulp4tsrgjfta1afss969dl2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "993579334903-0eecbmrgsqivoglsj4qevrrv8c3u93oj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.loanManagementSystem"
+              }
+            }
+          ]
         }
       }
     }

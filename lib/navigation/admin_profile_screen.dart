@@ -51,7 +51,7 @@ class AdminProfileScreen extends StatelessWidget {
           ),
                _buildSettingsItem(context, Icons.group, "Members Management", "Add, update or remove member", MembersScreen(), Colors.blue),
           Divider(),
-          _buildSettingsItem(context, Icons.notifications, "Notification", "View Notification", NotificationScreen(), Colors.orange),
+          _buildSettingsItem(context, Icons.notifications, "Notification", "See Notification", NotificationScreen(), Colors.orange),
           Divider(),
           _buildSettingsItem(context, Icons.dashboard, "Overview", "View Dashboard", DashboardScreen(), Colors.green),
           Divider(),
