@@ -38,7 +38,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -46,12 +46,29 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFFf9f9f9),
       ),
-      home: MainScreen(), 
-    
+       initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginScreen(
+              onLoginSuccess: () {
+                Navigator.pushReplacementNamed(context, '/main');
+              },
+              onSignUp: () {
+                Navigator.pushNamed(context, '/register');
+              },
+            ),
+        '/register': (context) => SignUpScreen(
+              onSignUpSuccess: () {
+                Navigator.pushReplacementNamed(context, '/main');
+              },
+              onLogin: () {
+                Navigator.pop(context);
+              },
+            ),
+        '/main': (context) => const MainScreen(), 
+      },
     );
   }
 }
-
 
 // LoginScreen(
       //   onLoginSuccess: () {
